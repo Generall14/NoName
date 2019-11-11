@@ -22,6 +22,7 @@
 #include "main.h"
 #include "stm32f1xx_it.h"
 #include "utils.h"
+#include "error.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -186,7 +187,7 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
+  //HAL_IncTick();
   SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR11);
   if(cnt++ >= 1000)
   {

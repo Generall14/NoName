@@ -22,6 +22,7 @@
 #include "main.h"
 #include "usb_device.h"
 #include "utils.h"
+#include "error.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -111,6 +112,7 @@ int main(void)
 			CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
 //			asm volatile ("cpsie i");
 			__enable_irq();
+			raise_error(0xF1);
 //			cntm=0;
 //		}
 	}
