@@ -6,6 +6,11 @@
 
 uint8_t error_code = ERROR_UNDEFINED;
 
+void safe_cleanup()
+{
+	// TODO: put platform in safe mode
+}
+
 void raise_error(uint8_t code)
 {
 	error_code = code;
@@ -21,6 +26,8 @@ void prim_delay(uint32_t time)
 
 void error_handler()
 {
+	__disable_irq();
+	safe_cleanup();
 	__disable_irq();
 	while(1)
 	{

@@ -5,7 +5,7 @@
 
 extern uint8_t error_code;
 
-#define ERROR_UNDEFINED 0x55
+#define ERROR_UNDEFINED 0x5A
 
 void raise_error(uint8_t code);
 void error_handler();

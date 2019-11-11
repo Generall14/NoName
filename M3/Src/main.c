@@ -23,6 +23,9 @@
 #include "usb_device.h"
 #include "utils.h"
 #include "error.h"
+#include "core_cm3.h"
+#include "stm32f1xx_hal_flash.h"
+#include "stm32f1xx_hal_flash_ex.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -93,8 +96,22 @@ int main(void)
   MX_GPIO_Init();
 //  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+  //MPU->CTRL = 0u;
+  //uint32_t* ptr = 0x801F800u;
+  //*ptr = 0xaaaa5555;
+  //(uint32_t*)(0x801F800u) = 0xaaaa5555;
 
-
+  uint32_t PageError;
+  FLASH_EraseInitTypeDef ddd={FLASH_TYPEERASE_PAGES, 0, 0x801F800u, 1};
+  HAL_FLASH_Unlock();
+  HAL_FLASHEx_Erase(&ddd, &PageError);
+  for(int i=0;i<16;i++)
+	  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i, 0x11111111*i);
+  HAL_FLASH_Lock();
+  HAL_FLASH_Unlock();
+  for(int i=0;i<16;i++)
+  	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i+4*16, 0x11111111*i);
+  HAL_FLASH_Lock();
 
   /* USER CODE END 2 */
 
@@ -112,7 +129,7 @@ int main(void)
 			CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
 //			asm volatile ("cpsie i");
 			__enable_irq();
-			raise_error(0xF1);
+			raise_error(ERROR_UNDEFINED);
 //			cntm=0;
 //		}
 	}
@@ -160,6 +177,7 @@ void SystemClock_Config(void)
   LL_SYSTICK_SetClkSource(LL_SYSTICK_CLKSOURCE_HCLK);
   LL_SetSystemCoreClock(72000000);
   LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
+
 
   WRITE_REG(SysTick->LOAD, 0x1193f); // 1 ms
   LL_SYSTICK_EnableIT();
