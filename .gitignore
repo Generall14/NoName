@@ -1,2 +1,6 @@
 CubeM3/*/
 CubeM3/.mxproject
+CubeM3/.cproject
+CubeM3/.project
+CubeM3/CubeM3.elf.launch
+CubeM3/STM32F103VB_FLASH.ld
