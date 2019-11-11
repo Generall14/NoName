@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
+#include "utils.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -66,6 +67,7 @@ static void MX_GPIO_Init(void);
   */
 int main(void)
 {
+	uint32_t cntm = 0;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -88,19 +90,30 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USB_DEVICE_Init();
+//  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
+	while (1)
+	{
+//		cntm++;
+//		if(cntm >= 0x1193f)
+//		{
+//			asm volatile ("cpsid i");
+			__disable_irq();
+			SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR8+cntm);
+			SET_BIT(GPIOB->ODR, GPIO_ODR_ODR9);
+			CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
+//			asm volatile ("cpsie i");
+			__enable_irq();
+//			cntm=0;
+//		}
+	}
   /* USER CODE END 3 */
 }
 
@@ -145,6 +158,9 @@ void SystemClock_Config(void)
   LL_SYSTICK_SetClkSource(LL_SYSTICK_CLKSOURCE_HCLK);
   LL_SetSystemCoreClock(72000000);
   LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL_DIV_1_5);
+
+  WRITE_REG(SysTick->LOAD, 0x1193f); // 1 ms
+  LL_SYSTICK_EnableIT();
 }
 
 /**
@@ -173,7 +189,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = LL_GPIO_PIN_10|LL_GPIO_PIN_11|LL_GPIO_PIN_12|LL_GPIO_PIN_13 
                           |LL_GPIO_PIN_14|LL_GPIO_PIN_15|LL_GPIO_PIN_8|LL_GPIO_PIN_9;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 

@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "utils.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -181,10 +182,17 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+	static uint16_t cnt = 0;
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
+  SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR11);
+  if(cnt++ >= 1000)
+  {
+	  SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR12 | GPIO_ODR_ODR13 | GPIO_ODR_ODR14 | GPIO_ODR_ODR15);
+	  cnt=0;
+  }
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
