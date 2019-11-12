@@ -1,0 +1,5 @@
+Time [us]:
+flash_erase_time 	22016	(1 page)
+flash_write_time 	112		(1 word)
+flash_read_time		1		(1 word)
+flash_unlock_time 	1

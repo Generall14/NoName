@@ -73,7 +73,8 @@ static void MX_TIM2_Init(void);
 int main(void)
 {
 	uint32_t cntm = 0;
-	volatile uint32_t last_timestamp, current_timestamp, diff_timestamp;
+	volatile uint32_t last_timestamp, current_timestamp, diff_timestamp, flash_erase_time, flash_write_time, flash_unlock_time;
+	volatile uint32_t flash_read_time, flash_read;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -105,15 +106,35 @@ int main(void)
 #ifdef xxxxxxxxxxxxxxxx
   uint32_t PageError;
   FLASH_EraseInitTypeDef ddd={FLASH_TYPEERASE_PAGES, 0, 0x801F800u, 1};
+  last_timestamp = get_global_clock();
   HAL_FLASH_Unlock();
+  current_timestamp = get_global_clock();
+  flash_unlock_time = current_timestamp - last_timestamp;
+
+  last_timestamp = get_global_clock();
   HAL_FLASHEx_Erase(&ddd, &PageError);
+  current_timestamp = get_global_clock();
+  flash_erase_time = current_timestamp - last_timestamp;
+
   for(uint32_t i=0;i<16;i++)
+  {
+	  last_timestamp = get_global_clock();
 	  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i, 0x11111111*i);
+	  current_timestamp = get_global_clock();
+	  flash_write_time = current_timestamp - last_timestamp;
+  }
+
   HAL_FLASH_Lock();
   HAL_FLASH_Unlock();
   for(uint32_t i=0;i<16;i++)
   	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i+4*16, 0x11111111*i);
   HAL_FLASH_Lock();
+
+  last_timestamp = get_global_clock();
+  uint32_t* ptr = 0x801F800u+4*2+4;
+  flash_read = *ptr;
+  current_timestamp = get_global_clock();
+  flash_read_time = current_timestamp - last_timestamp;
 #endif
 
   /* USER CODE END 2 */
