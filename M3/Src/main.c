@@ -73,6 +73,7 @@ static void MX_TIM2_Init(void);
 int main(void)
 {
 	uint32_t cntm = 0;
+	volatile uint32_t last_timestamp, current_timestamp, diff_timestamp;
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -131,6 +132,10 @@ int main(void)
 			CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
 //			asm volatile ("cpsie i");
 			__enable_irq();
+			last_timestamp = current_timestamp;
+			current_timestamp = get_global_clock();
+			diff_timestamp = current_timestamp - last_timestamp;
+			last_timestamp *= .001;
 			//raise_error(ERROR_UNDEFINED);
 //			cntm=0;
 //		}
@@ -235,8 +240,8 @@ void Error_Handler(void)
 
 static void MX_TIM2_Init(void)
 {
-	// Tick 10 us
-	// UIF every 0xFFFF * 10 us
+	// Tick 1 us
+	// UIF every 0xFFFF * 1 us
   /* USER CODE BEGIN TIM2_Init 0 */
 
   /* USER CODE END TIM2_Init 0 */
@@ -253,7 +258,7 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
-  TIM_InitStruct.Prescaler = 719;
+  TIM_InitStruct.Prescaler = 71;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
   TIM_InitStruct.Autoreload = 0xFFFF;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;

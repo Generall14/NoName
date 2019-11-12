@@ -23,6 +23,7 @@
 #include "stm32f1xx_it.h"
 #include "utils.h"
 #include "error.h"
+#include "global_clock.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -227,6 +228,7 @@ void TIM2_IRQHandler(void)
 {
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
 	SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR15);
+	global_clock += 0xFFFF;
 
   /* USER CODE BEGIN TIM2_IRQn 0 */
   /* USER CODE END TIM2_IRQn 0 */
