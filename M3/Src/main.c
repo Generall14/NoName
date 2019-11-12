@@ -235,6 +235,8 @@ void Error_Handler(void)
 
 static void MX_TIM2_Init(void)
 {
+	// Tick 10 us
+	// UIF every 0xFFFF * 10 us
   /* USER CODE BEGIN TIM2_Init 0 */
 
   /* USER CODE END TIM2_Init 0 */
@@ -251,9 +253,9 @@ static void MX_TIM2_Init(void)
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
-  TIM_InitStruct.Prescaler = 72;
+  TIM_InitStruct.Prescaler = 719;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 0x8000;
+  TIM_InitStruct.Autoreload = 0xFFFF;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM2);
