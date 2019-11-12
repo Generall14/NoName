@@ -32,7 +32,7 @@ void error_handler()
 	while(1)
 	{
 		CLEAR_BIT(GPIOB->ODR, BITS_MASK);
-		for(int i=0; i<8; i++)
+		for(int i=0;i<8;i++)
 		{
 			prim_delay(WAIT_BASE);
 			SWAP_BIT(GPIOB->ODR, BITS_MASK);
