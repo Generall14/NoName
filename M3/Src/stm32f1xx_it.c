@@ -191,7 +191,7 @@ void SysTick_Handler(void)
   SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR11);
   if(cnt++ >= 1000)
   {
-	  SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR12 | GPIO_ODR_ODR13 | GPIO_ODR_ODR14 | GPIO_ODR_ODR15);
+	  SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR12 | GPIO_ODR_ODR13 | GPIO_ODR_ODR14);
 	  cnt=0;
   }
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -218,6 +218,19 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
   /* USER CODE BEGIN USB_LP_CAN1_RX0_IRQn 1 */
 
   /* USER CODE END USB_LP_CAN1_RX0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+	SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR15);
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+  /* USER CODE END TIM2_IRQn 0 */
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

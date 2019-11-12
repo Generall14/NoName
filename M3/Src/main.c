@@ -56,6 +56,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,23 +96,24 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
 //  MX_USB_DEVICE_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  //MPU->CTRL = 0u;
-  //uint32_t* ptr = 0x801F800u;
-  //*ptr = 0xaaaa5555;
-  //(uint32_t*)(0x801F800u) = 0xaaaa5555;
 
+
+  //FLASH test
+#ifdef xxxxxxxxxxxxxxxx
   uint32_t PageError;
   FLASH_EraseInitTypeDef ddd={FLASH_TYPEERASE_PAGES, 0, 0x801F800u, 1};
   HAL_FLASH_Unlock();
   HAL_FLASHEx_Erase(&ddd, &PageError);
-  for(int i=0;i<16;i++)
+  for(uint32_t i=0;i<16;i++)
 	  HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i, 0x11111111*i);
   HAL_FLASH_Lock();
   HAL_FLASH_Unlock();
-  for(int i=0;i<16;i++)
+  for(uint32_t i=0;i<16;i++)
   	HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, 0x801F800u+4*i+4*16, 0x11111111*i);
   HAL_FLASH_Lock();
+#endif
 
   /* USER CODE END 2 */
 
@@ -129,7 +131,7 @@ int main(void)
 			CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
 //			asm volatile ("cpsie i");
 			__enable_irq();
-			raise_error(ERROR_UNDEFINED);
+			//raise_error(ERROR_UNDEFINED);
 //			cntm=0;
 //		}
 	}
@@ -229,6 +231,41 @@ void Error_Handler(void)
   /* User can add his own implementation to report the HAL error return state */
 
   /* USER CODE END Error_Handler_Debug */
+}
+
+static void MX_TIM2_Init(void)
+{
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  LL_TIM_InitTypeDef TIM_InitStruct = {0};
+
+  /* Peripheral clock enable */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM2);
+
+  /* TIM2 interrupt Init */
+  NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(TIM2_IRQn);
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  TIM_InitStruct.Prescaler = 72;
+  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+  TIM_InitStruct.Autoreload = 0x8000;
+  TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
+  LL_TIM_Init(TIM2, &TIM_InitStruct);
+  LL_TIM_DisableARRPreload(TIM2);
+  LL_TIM_SetClockSource(TIM2, LL_TIM_CLOCKSOURCE_INTERNAL);
+  LL_TIM_SetTriggerOutput(TIM2, LL_TIM_TRGO_RESET);
+  LL_TIM_DisableMasterSlaveMode(TIM2);
+
+  LL_TIM_EnableIT_UPDATE(TIM2);
+  LL_TIM_EnableCounter(TIM2);
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 }
 
 #ifdef  USE_FULL_ASSERT
