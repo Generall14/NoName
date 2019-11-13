@@ -26,6 +26,8 @@
 #include "core_cm3.h"
 #include "stm32f1xx_hal_flash.h"
 #include "stm32f1xx_hal_flash_ex.h"
+#include "SProt/sprot_i.h"
+#include "SProt/sprot_l.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -94,6 +96,7 @@ int main(void)
 	/* USER CODE BEGIN SysInit */
 
 	/* USER CODE END SysInit */
+	sprot_init_fifo(&pc_fifo);
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
@@ -143,7 +146,8 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
-		blocking_delay_ms(1000);
+		blocking_delay_ms(1);
+		process_fifo(&pc_fifo);
 //		cntm++;
 //		if(cntm >= 0x1193f)
 //		{
@@ -160,7 +164,7 @@ int main(void)
 		last_timestamp *= .001;
 
 
-		CDC_Transmit_FS("abc", 3);
+		//CDC_Transmit_FS("abc", 3);
 		//raise_error(ERROR_UNDEFINED);
 //			cntm=0;
 //		}
