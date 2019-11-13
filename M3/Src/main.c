@@ -158,6 +158,9 @@ int main(void)
 		current_timestamp = get_global_clock();
 		diff_timestamp = current_timestamp - last_timestamp;
 		last_timestamp *= .001;
+
+
+		CDC_Transmit_FS("abc", 3);
 		//raise_error(ERROR_UNDEFINED);
 //			cntm=0;
 //		}

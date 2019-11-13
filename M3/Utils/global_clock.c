@@ -1,5 +1,7 @@
 #include "global_clock.h"
 
+#define TIMCNT TIM2->CNT
+
 uint32_t global_clock = 0;
 
 uint32_t get_global_clock()
@@ -7,7 +9,7 @@ uint32_t get_global_clock()
 	uint32_t base, curr;
 	__disable_irq();
 	base = global_clock;
-	curr = TIM2->CNT;
+	curr = TIMCNT;
 	__enable_irq();
 	return base + curr;
 }
@@ -24,9 +26,9 @@ uint32_t get_global_clock_us()
 
 void blocking_delay_us(uint16_t time)
 {
-	uint16_t future = time + TIM2->CNT;
-	while(TIM2->CNT == future);
-	while(TIM2->CNT != future);
+	uint16_t future = time + TIMCNT;
+	while(TIMCNT == future);
+	while(TIMCNT != future);
 }
 
 void blocking_delay_ms(uint16_t time)
