@@ -97,7 +97,7 @@ int main(void)
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
-//  MX_USB_DEVICE_Init();
+	MX_USB_DEVICE_Init();
 	MX_TIM2_Init();
 	/* USER CODE BEGIN 2 */
 
@@ -143,6 +143,7 @@ int main(void)
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
+		blocking_delay_ms(1000);
 //		cntm++;
 //		if(cntm >= 0x1193f)
 //		{

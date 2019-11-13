@@ -21,3 +21,18 @@ uint32_t get_global_clock_us()
 {
 	return get_global_clock()*GLOBAL_CLOCK_TO_US_MUL;
 }
+
+void blocking_delay_us(uint16_t time)
+{
+	uint16_t future = time + TIM2->CNT;
+	while(TIM2->CNT == future);
+	while(TIM2->CNT != future);
+}
+
+void blocking_delay_ms(uint16_t time)
+{
+	while(time--)
+	{
+		blocking_delay_us(1000);
+	}
+}

@@ -12,4 +12,7 @@ uint32_t get_global_clock();
 uint32_t get_global_clock_us();
 uint32_t get_global_clock_ms();
 
+void blocking_delay_us(uint16_t time);
+void blocking_delay_ms(uint16_t time);
+
 #endif
