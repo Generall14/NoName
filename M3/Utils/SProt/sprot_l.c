@@ -19,7 +19,7 @@ void sprot_init_fifo(sprot_fifo* fifo)
 
 void process_fifo(sprot_fifo* fifo)
 {
-	spr_timeout_head(fifo);
+	//spr_timeout_head(fifo);
 }
 
 void spr_timeout_head(sprot_fifo* fifo)

@@ -32,11 +32,18 @@ typedef struct{
 void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
- * Must be called in loop.
+ * Must be called in loop to execute commands.
  */
 void process_fifo(sprot_fifo* fifo);
 
+/**
+ * Must be called in loop timeout incoming commands.
+ */
+void spr_timeout_head(sprot_fifo* fifo);
+
 //================================
+
+//TODO:
 
 /**
  * Returns current head buffer from fifo (to fill with new
@@ -53,7 +60,5 @@ sprot_buff_entry* get_spfifo_head(sprot_fifo* fifo);
  * next element if full.
  */
 sprot_buff_entry* get_spfifo_tail(sprot_fifo* fifo);
-
-void spr_timeout_head(sprot_fifo* fifo);
 
 #endif
