@@ -1,7 +1,15 @@
 #ifndef _SPROT_L_H_
 #define _SPROT_L_H_
 
-#include "stm32f1xx_hal.h"
+/**
+ * IMPORTANT: Those functions are not thread safe! Each user
+ * function have to be called in one level threads!
+ *
+ * TODO: better way to timeout commands?.
+ * TODO: unit tests for get_spfifo_tail, get_spfifo_head
+ */
+
+#include <stdint.h>
 
 #define SPROT_TIMEOUT 1000
 
@@ -31,6 +39,8 @@ typedef struct
 	uint8_t head; // buffer index
 } sprot_fifo;
 
+//======= User functions =========
+
 void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
@@ -39,13 +49,11 @@ void sprot_init_fifo(sprot_fifo* fifo);
 void process_fifo(sprot_fifo* fifo);
 
 /**
- * Must be called in loop timeout incoming commands.
+ * Must be called in loop to timeout incoming commands.
  */
 void spr_timeout_head(sprot_fifo* fifo);
 
 //================================
-
-//TODO:
 
 /**
  * Returns current head buffer from fifo (to fill with new

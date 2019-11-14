@@ -24,6 +24,8 @@
 #include "utils.h"
 #include "error.h"
 #include "global_clock.h"
+#include "SProt/sprot_i.h"
+#include "SProt/sprot_l.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -198,6 +200,7 @@ void SysTick_Handler(void)
 	/* USER CODE BEGIN SysTick_IRQn 1 */
 
 	/* USER CODE END SysTick_IRQn 1 */
+	spr_timeout_head(&pc_fifo);
 }
 
 /******************************************************************************/

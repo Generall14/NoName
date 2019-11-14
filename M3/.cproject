@@ -317,6 +317,9 @@
 		<project id="CubeM3.com.atollic.truestudio.exe.1549124020" name="Executable" projectType="com.atollic.truestudio.exe"/>
 	</storageModule>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Test">
+			<resource resourceType="PROJECT" workspacePath="/CubeM3"/>
+		</configuration>
 		<configuration configurationName="Debug">
 			<resource resourceType="PROJECT" workspacePath="/CubeM3"/>
 		</configuration>
