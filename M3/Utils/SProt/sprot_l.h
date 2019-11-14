@@ -13,7 +13,8 @@
 #define SPROT_FILLING 2
 #define SPROT_PROCESSING 3
 
-typedef struct{
+typedef struct
+{
 	uint8_t start;
 	uint8_t cmdHsize;
 	uint8_t cmdL;
@@ -23,7 +24,8 @@ typedef struct{
 	uint32_t timestamp;
 } sprot_buff_entry;
 
-typedef struct{
+typedef struct
+{
 	sprot_buff_entry buffs[SPROT_FIFO_ENTRIES];
 	uint8_t tail; // buffer index
 	uint8_t head; // buffer index
