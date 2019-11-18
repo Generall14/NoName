@@ -1,7 +1,7 @@
 #ifndef _GLOBAL_CLOCK_H_
 #define _GLOBAL_CLOCK_H_
 
-#include "stm32f1xx_hal.h"
+#include <stdint.h>
 
 #define GLOBAL_CLOCK_TO_MS_MUL .001
 #define GLOBAL_CLOCK_TO_US_MUL 1
