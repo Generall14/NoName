@@ -17,5 +17,7 @@
 TEST_LIST = {
    { "test_test1", test_test1 },
    { "test_init_fifo", test_init_fifo },
+   { "test_get_head_fifo", test_get_head_fifo },
+   { "test_get_tail_fifo", test_get_tail_fifo },
    { NULL, NULL }
 };

@@ -6,7 +6,7 @@
  * function have to be called in one level threads!
  *
  * TODO: better way to timeout commands?.
- * TODO: unit tests for get_spfifo_tail, get_spfifo_head
+ * TODO: unit tests for get_spfifo_tail, get_spfifo_head, spr_timeout_head, process_fifo
  */
 
 #include <stdint.h>
