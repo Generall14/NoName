@@ -1,4 +1,5 @@
 #include "global_clock.h"
+#include "stm32f1xx_hal.h"
 
 #define TIMCNT TIM2->CNT
 

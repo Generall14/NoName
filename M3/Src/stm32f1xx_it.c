@@ -191,10 +191,9 @@ void SysTick_Handler(void)
 
 	/* USER CODE END SysTick_IRQn 0 */
 	//HAL_IncTick();
-	SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR11);
 	if(cnt++ >= 1000)
 	{
-		SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR12 | GPIO_ODR_ODR13 | GPIO_ODR_ODR14);
+		LED_IRQ_SWAP(LED6);
 		cnt=0;
 	}
 	/* USER CODE BEGIN SysTick_IRQn 1 */
@@ -230,7 +229,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
-	SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR15);
+	LED_IRQ_SWAP(LED7);
 	global_clock += 0xFFFF;
 
 	/* USER CODE BEGIN TIM2_IRQn 0 */

@@ -28,6 +28,7 @@
 #include "stm32f1xx_hal_flash_ex.h"
 #include "SProt/sprot_i.h"
 #include "SProt/sprot_l.h"
+#include "global_clock.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -68,42 +69,21 @@ static void MX_TIM2_Init(void);
 
 /* USER CODE END 0 */
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
 int main(void)
 {
-	uint32_t cntm = 0;
 	volatile uint32_t last_timestamp, current_timestamp, diff_timestamp, flash_erase_time, flash_write_time, flash_unlock_time;
 	volatile uint32_t flash_read_time, flash_read;
-	/* USER CODE BEGIN 1 */
-
-	/* USER CODE END 1 */
-
-	/* MCU Configuration--------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
-
-	/* USER CODE BEGIN Init */
-
-	/* USER CODE END Init */
-
-	/* Configure the system clock */
 	SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
-
-	/* USER CODE END SysInit */
 	sprot_init_fifo(&pc_fifo);
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_USB_DEVICE_Init();
 	MX_TIM2_Init();
-	/* USER CODE BEGIN 2 */
-
 
 	//FLASH test
 #ifdef xxxxxxxxxxxxxxxx
@@ -140,36 +120,19 @@ int main(void)
 	flash_read_time = current_timestamp - last_timestamp;
 #endif
 
-	/* USER CODE END 2 */
-
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		blocking_delay_ms(1);
 		process_fifo(&pc_fifo);
-//		cntm++;
-//		if(cntm >= 0x1193f)
-//		{
-//			asm volatile ("cpsid i");
-		__disable_irq();
-		SWAP_BIT(GPIOB->ODR, GPIO_ODR_ODR8+cntm);
-		SET_BIT(GPIOB->ODR, GPIO_ODR_ODR9);
-		CLEAR_BIT(GPIOB->ODR, GPIO_ODR_ODR10);
-//			asm volatile ("cpsie i");
-		__enable_irq();
+
+		LED_SWAP(LED0);
+		LED_ON(LED1);
+		LED_OFF(LED2);
+
 		last_timestamp = current_timestamp;
 		current_timestamp = get_global_clock();
 		diff_timestamp = current_timestamp - last_timestamp;
-		last_timestamp *= .001;
-
-
-		//CDC_Transmit_FS("abc", 3);
-		//raise_error(ERROR_UNDEFINED);
-//			cntm=0;
-//		}
 	}
-	/* USER CODE END 3 */
 }
 
 /**
@@ -248,7 +211,6 @@ static void MX_GPIO_Init(void)
 	GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
 	GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
 	LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
 }
 
 /* USER CODE BEGIN 4 */
