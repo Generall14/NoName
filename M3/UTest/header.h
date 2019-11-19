@@ -12,4 +12,5 @@ void test_init_fifo();
 void test_get_head_fifo();
 void test_get_tail_fifo();
 void test_timeout_head();
+void test_push_fifo();
 #endif

@@ -10,6 +10,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define SPROT_TIMEOUT_US 1000
 
@@ -24,7 +25,7 @@
 typedef struct
 {
 	uint8_t start;
-	uint8_t cmdHsize;
+	uint8_t cmdHSize;
 	uint8_t cmdL;
 	uint8_t data_and_crc[PACKAGE_DATA_BYTES+1];
 	uint8_t status;
@@ -52,6 +53,16 @@ void process_fifo(sprot_fifo* fifo);
  * Must be called in loop to timeout incoming commands.
  */
 void spr_timeout_head(sprot_fifo* fifo);
+
+/**
+ * Pushes data into next available head buffer. When input buff
+ * will be longer then available in head buff - input data will
+ * be trimmed.
+ * buff - buffer with data to be written.
+ * bytes - bytes in buffer.
+ * return - number of written bytes.
+ */
+uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 
 //================================
 

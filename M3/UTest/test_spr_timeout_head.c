@@ -1,9 +1,15 @@
 #include "header.h"
 
 #include <SProt/sprot_l.h>
+#include <stdbool.h>
+#include <string.h>
 
 extern uint32_t fake_global_clock_us;
-
+#define TIMESTART 1
+#define TIMEOUTED (TIMESTART+SPROT_TIMEOUT_US+1)
+#define NOTTIMEOUTED (TIMESTART+SPROT_TIMEOUT_US-1)
+#define IBUFF_SIZE PACKAGE_DATA_BYTES*2
+	
 void test_init_fifo()
 {
 	sprot_fifo fifo;
@@ -141,32 +147,182 @@ void test_get_tail_fifo()
 
 void test_timeout_head()
 {
-	const uint32_t timestart = 666;
-	const uint32_t timeouted = timestart+SPROT_TIMEOUT_US+1;
-	const uint32_t nottimeouted = timestart+SPROT_TIMEOUT_US-1;
 	sprot_fifo fifo;
 	
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FILLING;
-	fifo.buffs[0].timestamp = timestart;
-	fake_global_clock_us = nottimeouted;
+	fifo.buffs[0].timestamp = TIMESTART;
+	fake_global_clock_us = NOTTIMEOUTED;
 	spr_timeout_head(&fifo);
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
 	"First is SPROT_FILLING and not timeouted - status should be SPROT_FILLING");
 	
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FILLING;
-	fifo.buffs[0].timestamp = timestart;
-	fake_global_clock_us = timeouted;
+	fifo.buffs[0].timestamp = TIMESTART;
+	fake_global_clock_us = TIMEOUTED;
 	spr_timeout_head(&fifo);
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
 	"First is SPROT_FILLING and timeouted - status should be SPROT_FULL");
 	
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_EMPTY;
-	fifo.buffs[0].timestamp = timestart;
-	fake_global_clock_us = timeouted;
+	fifo.buffs[0].timestamp = TIMESTART;
+	fake_global_clock_us = TIMEOUTED;
 	spr_timeout_head(&fifo);
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
 	"First is SPROT_EMPTY and timeouted - status should be SPROT_EMPTY");
 }
+
+void prepare_idata(uint8_t ibuff[])
+{
+	for(int i=0;i<IBUFF_SIZE;i++)
+		ibuff[i] = i&0xFF;
+}
+
+bool validate_idata(uint8_t ibuff[])
+{
+	for(int i=0;i<IBUFF_SIZE;i++)
+	{
+		if(ibuff[i] != i&0xFF)
+			return false;
+	}
+	return true;
+}
+
+void test_push_fifo()
+{
+	sprot_fifo fifo;
+	uint8_t ibuff[IBUFF_SIZE];
+	uint8_t writted;
+	
+	// First write to empty buff
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fake_global_clock_us = NOTTIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 2);
+	TEST_CHECK_P(fifo.buffs[0].timestamp==NOTTIMEOUTED, \
+	"Write to SPROT_EMPTY buff - timestamp should be updated");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
+	"Write to SPROT_EMPTY buff - buff should be changed to SPROT_FILLING");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==2, \
+	"Write to SPROT_EMPTY buff - write offset should be updated");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"Write to SPROT_EMPTY buff - input data should not be changed");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 2)==0, \
+	"Write to SPROT_EMPTY buff - data should be coppied");
+	TEST_CHECK_P(writted==2, \
+	"Write to SPROT_EMPTY buff - should return ibuff size");
+	
+	// Next write to not timeouted buff
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FILLING;
+	fake_global_clock_us = NOTTIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 2);
+	TEST_CHECK_P(fifo.buffs[0].timestamp==0, \
+	"Write to SPROT_FILLING buff - timestamp should not be updated");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
+	"Write to SPROT_EMPTY buff - buff should not be changed");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==2, \
+	"Write to SPROT_FILLING buff - write offset should be updated");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"Write to SPROT_FILLING buff - input data should not be changed");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 2)==0, \
+	"Write to SPROT_FILLING buff - data should be coppied");
+	TEST_CHECK_P(writted==2, \
+	"Write to SPROT_FILLING buff - should return ibuff size");
+	
+	// Next write to timeouted buff
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FILLING;
+	fake_global_clock_us = TIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 2);
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"Write to SPROT_FILLING buff, after timeouted - buff should be changed to SPROT_FULL");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
+	"Write to SPROT_FILLING buff - write offset should not be updated");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"Write to SPROT_FILLING buff - input data should not be changed");
+	TEST_CHECK_P(fifo.buffs[1].status==SPROT_FILLING, \
+	"Write to SPROT_FILLING buff, after timeouted - next buff should be used and changed"
+	" to SPROT_FILLING");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[1].start), 2)==0, \
+	"Write to SPROT_FILLING buff, after timeouted - next buff should be used and writed"
+	" data to it");
+	TEST_CHECK_P(writted==2, \
+	"Write to SPROT_FILLING buff, after timeouted - should return ibuff size");
+	
+	// Write with non zero offset
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FILLING;
+	fifo.buffs[0].write_offseet = 4;
+	fake_global_clock_us = NOTTIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 10);
+	TEST_CHECK_P(writted==10, \
+	"Write with non zero offset - should return ibuff size");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==14, \
+	"Write with non zero offset - write offset should be updated");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start)+4, 10)==0, \
+	"Write with non zero offset - data should be coppied");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"Write with non zero offset - input data should not be changed");
+	
+	// ibuff bigger than buffer available size
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FILLING;
+	fake_global_clock_us = NOTTIMEOUTED;
+	fifo.buffs[0].write_offseet = 1;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, IBUFF_SIZE);
+	TEST_CHECK_P(writted==PACKAGE_DATA_BYTES+4-1, \
+	"ibuff bigger than buffer available size - should return available size");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"ibuff bigger than buffer available size - buff should be changed to SPROT_FULL");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start)+1, PACKAGE_DATA_BYTES+4-1)==0, \
+	"ibuff bigger than buffer available size - data should be coppied");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"ibuff bigger than buffer available size - input data should not be changed");
+	
+	// Full command recieved
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	ibuff[1]=10&0x7F; // cmd:bytes
+	fifo.buffs[0].status = SPROT_FILLING;
+	fake_global_clock_us = NOTTIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 10+4);
+	TEST_CHECK_P(writted==10+4, \
+	"Full command recieved - should return ibuff size");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 10+4)==0, \
+	"Full command recieved - data should be coppied");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"Full command recieved - buff should be changed to SPROT_FULL");
+	
+	// No buffers available
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FULL;
+	fifo.buffs[1].status = SPROT_FULL;
+	fake_global_clock_us = NOTTIMEOUTED;
+	writted = sp_push_bytes_to_fifo(&fifo, ibuff, 10);
+	TEST_CHECK_P(writted==0, \
+	"No buffers available - should return zero");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

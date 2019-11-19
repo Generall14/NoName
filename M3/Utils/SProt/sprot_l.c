@@ -65,3 +65,8 @@ sprot_buff_entry* get_spfifo_tail(sprot_fifo* fifo)
 		return 0;
 }
 
+uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes)
+{
+	return 0xff;
+}
+
