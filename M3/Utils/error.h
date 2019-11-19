@@ -3,6 +3,11 @@
 
 #include "stm32f1xx_hal.h"
 
+/**
+ * Function raise_error allow user to stop processor in case
+ * of fatal error. Function should show error code by LEDs.
+ */
+
 extern uint8_t error_code;
 
 #define ERROR_UNDEFINED 0x5A

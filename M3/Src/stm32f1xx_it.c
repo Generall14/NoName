@@ -230,7 +230,7 @@ void TIM2_IRQHandler(void)
 {
 	CLEAR_BIT(TIM2->SR, TIM_SR_UIF);
 	LED_IRQ_SWAP(LED7);
-	global_clock += 0xFFFF;
+	gc_timer_overflow();
 
 	/* USER CODE BEGIN TIM2_IRQn 0 */
 	/* USER CODE END TIM2_IRQn 0 */

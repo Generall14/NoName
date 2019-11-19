@@ -1,8 +1,6 @@
 #include "global_clock.h"
 #include "stm32f1xx_hal.h"
 
-#define TIMCNT TIM2->CNT
-
 uint32_t global_clock = 0;
 
 uint32_t get_global_clock()
@@ -39,3 +37,9 @@ void blocking_delay_ms(uint16_t time)
 		blocking_delay_us(1000);
 	}
 }
+
+inline void gc_timer_overflow()
+{
+	global_clock += 0xFFFF;
+}
+
