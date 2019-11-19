@@ -46,15 +46,22 @@ typedef struct
 	uint8_t head; // buffer index
 } sprot_fifo;
 
+typedef struct
+{
+	uint8_t size; // 0xFF - Do not check before call
+	uint16_t cmd; // command number
+	void (*fun_ptr)(sprot_buff_entry*);
+} sprot_efunc;
+
 //======= User functions =========
 
 void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
  * Must be called in loop to execute commands.
- * TODO: struct witch exec_funcs. Default exec_func.
+ * TODO: implementations.
  */
-void process_fifo(sprot_fifo* fifo);
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], sprot_efunc *default_fun);
 
 /**
  * Must be called in loop to timeout incoming commands.
@@ -68,7 +75,7 @@ void spr_timeout_head(sprot_fifo* fifo);
  * buff - buffer with data to be written.
  * bytes - bytes in buffer.
  * return - number of written bytes.
- * TODO: implementations
+ * TODO: implementation
  */
 uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 

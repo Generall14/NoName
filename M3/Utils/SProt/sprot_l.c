@@ -17,9 +17,9 @@ void sprot_init_fifo(sprot_fifo* fifo)
 		fifo->buffs[i].status = SPROT_EMPTY;
 }
 
-void process_fifo(sprot_fifo* fifo)
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], sprot_efunc *default_fun)
 {
-	//spr_timeout_head(fifo);
+
 }
 
 void spr_timeout_head(sprot_fifo* fifo)
