@@ -2,8 +2,14 @@
 #define _SPROT_L_H_
 
 /**
- * IMPORTANT: Those functions are not thread safe! Each user
- * function have to be called in one level threads!
+ * IMPORTANT: Those functions are not thread safe!
+ * spr_timeout_head and sp_push_bytes_to_fifo have
+ * to be called on the same interrupt level.
+ *
+ * USAGE:
+ * 1. All fifo structures have to be initialized by sprot_init_fifo
+ * 2. Call repetitively process_fifo and spr_timeout_head.
+ * 3. Push new data into fifo by sp_push_bytes_to_fifo.
  *
  * TODO: better way to timeout commands?.
  * TODO: unit tests for process_fifo
@@ -46,6 +52,7 @@ void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
  * Must be called in loop to execute commands.
+ * TODO: struct witch exec_funcs. Default exec_func.
  */
 void process_fifo(sprot_fifo* fifo);
 
@@ -61,6 +68,7 @@ void spr_timeout_head(sprot_fifo* fifo);
  * buff - buffer with data to be written.
  * bytes - bytes in buffer.
  * return - number of written bytes.
+ * TODO: implementations
  */
 uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 
