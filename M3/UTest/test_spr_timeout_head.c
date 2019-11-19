@@ -2,6 +2,8 @@
 
 #include <SProt/sprot_l.h>
 
+extern uint32_t fake_global_clock_us;
+
 void test_init_fifo()
 {
 	sprot_fifo fifo;
@@ -80,7 +82,91 @@ void test_get_tail_fifo()
 {
 	sprot_fifo fifo;
 	
-	//TODO inplementation
-	TEST_CHECK_P(0, "Test not implemented!");
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_FULL;
+	sprot_buff_entry* tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==&fifo.buffs[0], \
+	"First is SPROT_FULL - should return firs buff");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_PROCESSING;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==&fifo.buffs[0], \
+	"First is SPROT_PROCESSING - should return firs buff");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[1].status = SPROT_FULL;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==&fifo.buffs[1], \
+	"First is SPROT_EMPTY, second is SPROT_FULL - should return second buff");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_FILLING;
+	fifo.buffs[1].status = SPROT_FULL;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==&fifo.buffs[1], \
+	"First is SPROT_FILLING, second is SPROT_FULL - should return second buff");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[1].status = SPROT_EMPTY;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==0, \
+	"First is SPROT_EMPTY, second is SPROT_EMPTY - should return zero");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[1].status = SPROT_FILLING;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==0, \
+	"First is SPROT_FILLING, second is SPROT_EMPTY - should return zero");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[1].status = SPROT_PROCESSING;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==0, \
+	"First is SPROT_PROCESSING, second is SPROT_EMPTY - should return zero");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.head = SPROT_FIFO_ENTRIES-1;
+	fifo.buffs[SPROT_FIFO_ENTRIES-1].status = SPROT_EMPTY;
+	fifo.buffs[0].status = SPROT_FULL;
+	tail = get_spfifo_tail(&fifo);
+	TEST_CHECK_P(tail==&fifo.buffs[0], \
+	"Head points to last buff, last buff is SPROT_EMPTY, first is SPROT_FULL "
+	"- should roll back and return firs buff");
 }
 
+void test_timeout_head()
+{
+	const uint32_t timestart = 666;
+	const uint32_t timeouted = timestart+SPROT_TIMEOUT_US+1;
+	const uint32_t nottimeouted = timestart+SPROT_TIMEOUT_US-1;
+	sprot_fifo fifo;
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_FILLING;
+	fifo.buffs[0].timestamp = timestart;
+	fake_global_clock_us = nottimeouted;
+	spr_timeout_head(&fifo);
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
+	"First is SPROT_FILLING and not timeouted - status should be SPROT_FILLING");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_FILLING;
+	fifo.buffs[0].timestamp = timestart;
+	fake_global_clock_us = timeouted;
+	spr_timeout_head(&fifo);
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"First is SPROT_FILLING and timeouted - status should be SPROT_FULL");
+	
+	memset(&fifo, 0x00, sizeof(fifo));
+	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[0].timestamp = timestart;
+	fake_global_clock_us = timeouted;
+	spr_timeout_head(&fifo);
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
+	"First is SPROT_EMPTY and timeouted - status should be SPROT_EMPTY");
+}

@@ -29,7 +29,7 @@ void spr_timeout_head(sprot_fifo* fifo)
 		return;
 	if(entry->status != SPROT_FILLING)
 		return;
-	if(get_global_clock_us() - entry->timestamp > SPROT_TIMEOUT)
+	if(get_global_clock_us() - entry->timestamp > SPROT_TIMEOUT_US)
 		entry->status = SPROT_FULL;
 }
 

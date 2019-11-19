@@ -6,12 +6,12 @@
  * function have to be called in one level threads!
  *
  * TODO: better way to timeout commands?.
- * TODO: unit tests for get_spfifo_tail, get_spfifo_head, spr_timeout_head, process_fifo
+ * TODO: unit tests for process_fifo
  */
 
 #include <stdint.h>
 
-#define SPROT_TIMEOUT 1000
+#define SPROT_TIMEOUT_US 1000
 
 #define PACKAGE_DATA_BYTES 64
 #define SPROT_FIFO_ENTRIES 4

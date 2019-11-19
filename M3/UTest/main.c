@@ -19,5 +19,6 @@ TEST_LIST = {
    { "test_init_fifo", test_init_fifo },
    { "test_get_head_fifo", test_get_head_fifo },
    { "test_get_tail_fifo", test_get_tail_fifo },
+   { "test_timeout_head", test_timeout_head },
    { NULL, NULL }
 };
