@@ -96,7 +96,7 @@ uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes)
 	// Finish buffer
 	if(head->write_offseet == SPROT_BUFF_CAPACITY)
 		head->status = SPROT_FULL;
-	else if(head->write_offseet >= head->cmdHSize&0x7F+4)
+	else if(head->write_offseet >= (head->cmdHSize&0x7F)+4)
 		head->status = SPROT_FULL;
 
 	return bytes_to_cpy;
