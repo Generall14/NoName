@@ -9,7 +9,7 @@ extern uint32_t fake_global_clock_us;
 #define TIMEOUTED (TIMESTART+SPROT_TIMEOUT_US+1)
 #define NOTTIMEOUTED (TIMESTART+SPROT_TIMEOUT_US-1)
 #define IBUFF_SIZE PACKAGE_DATA_BYTES*2
-	
+
 void test_init_fifo()
 {
 	sprot_fifo fifo;
@@ -32,9 +32,12 @@ void test_get_head_fifo()
 	
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_EMPTY;
+	fifo.buffs[0].write_offseet = 0xff;
 	sprot_buff_entry* head = get_spfifo_head(&fifo);
 	TEST_CHECK_P(head==&fifo.buffs[0], \
 	"Fifo is empty - should return firs buff");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
+	"Fifo is empty - head write_offseet should be zeroed");
 	
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FILLING;
@@ -177,14 +180,14 @@ void test_timeout_head()
 void prepare_idata(uint8_t ibuff[])
 {
 	for(int i=0;i<IBUFF_SIZE;i++)
-		ibuff[i] = i&0xFF;
+		ibuff[i] = (i+20)&0xFF;
 }
 
 bool validate_idata(uint8_t ibuff[])
 {
 	for(int i=0;i<IBUFF_SIZE;i++)
 	{
-		if(ibuff[i] != i&0xFF)
+		if(ibuff[i] != (i+20)&0xFF)
 			return false;
 	}
 	return true;

@@ -22,6 +22,7 @@
 
 #define PACKAGE_DATA_BYTES 64
 #define SPROT_FIFO_ENTRIES 4
+#define SPROT_BUFF_CAPACITY (PACKAGE_DATA_BYTES+4)
 
 #define SPROT_EMPTY 0
 #define SPROT_FULL 1
@@ -61,7 +62,7 @@ void sprot_init_fifo(sprot_fifo* fifo);
  * Must be called in loop to execute commands.
  * TODO: implementations.
  */
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], sprot_efunc *default_fun);
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*));
 
 /**
  * Must be called in loop to timeout incoming commands.

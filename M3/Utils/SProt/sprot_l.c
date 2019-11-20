@@ -1,5 +1,6 @@
 #include "sprot_l.h"
 #include "global_clock.h"
+#include <string.h>
 
 static uint8_t next_index(uint8_t current, sprot_fifo* fifo)
 {
@@ -17,7 +18,7 @@ void sprot_init_fifo(sprot_fifo* fifo)
 		fifo->buffs[i].status = SPROT_EMPTY;
 }
 
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], sprot_efunc *default_fun)
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*))
 {
 
 }
@@ -67,6 +68,33 @@ sprot_buff_entry* get_spfifo_tail(sprot_fifo* fifo)
 
 uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes)
 {
-	return 0xff;
+	spr_timeout_head(fifo);
+
+	// Get next buffer
+	sprot_buff_entry* head = get_spfifo_head(fifo);
+	if(head == 0)
+		return 0;
+
+	// Update status and timestamp
+	if(head->status==SPROT_EMPTY)
+	{
+		head->status = SPROT_FILLING;
+		head->timestamp = get_global_clock_us();
+	}
+
+	// Copy data
+	size_t bytes_to_cpy = SPROT_BUFF_CAPACITY-head->write_offseet;
+	if(bytes<bytes_to_cpy)
+		bytes_to_cpy = bytes;
+	memcpy(&(head->start)+head->write_offseet, buff, bytes_to_cpy);
+	head->write_offseet += bytes_to_cpy;
+
+	// Finish buffer
+	if(head->write_offseet == SPROT_BUFF_CAPACITY)
+		head->status = SPROT_FULL;
+	else if(head->write_offseet >= head->cmdHSize&0x7F+4)
+		head->status = SPROT_FULL;
+
+	return bytes_to_cpy;
 }
 
