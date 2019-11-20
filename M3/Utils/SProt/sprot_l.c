@@ -38,7 +38,11 @@ sprot_buff_entry* get_spfifo_head(sprot_fifo* fifo)
 {
 	if(fifo->buffs[fifo->head].status == SPROT_EMPTY ||
 	        fifo->buffs[fifo->head].status == SPROT_FILLING)
+	{
+		if(fifo->buffs[fifo->head].status == SPROT_EMPTY)
+			fifo->buffs[fifo->head].write_offseet = 0;
 		return &(fifo->buffs[fifo->head]);
+	}
 
 	uint8_t next = next_index(fifo->head, fifo);
 	if(fifo->buffs[next].status == SPROT_EMPTY)

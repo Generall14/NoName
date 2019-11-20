@@ -76,7 +76,6 @@ void spr_timeout_head(sprot_fifo* fifo);
  * buff - buffer with data to be written.
  * bytes - bytes in buffer.
  * return - number of written bytes.
- * TODO: implementation
  */
 uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 
