@@ -14,4 +14,7 @@ void test_get_tail_fifo();
 void test_timeout_head();
 void test_push_fifo();
 void test_push_command();
+void test_spexe_valid_commands();
+void test_spexe_invalid_commands();
+void test_spexe_null_ptrs();
 #endif

@@ -22,5 +22,8 @@ TEST_LIST = {
    { "test_timeout_head", test_timeout_head },
    { "test_push_fifo", test_push_fifo },
    { "test_push_command", test_push_command },
+   { "test_spexe_valid_commands", test_spexe_valid_commands },
+   { "test_spexe_invalid_commands", test_spexe_invalid_commands },
+   { "test_spexe_null_ptrs", test_spexe_null_ptrs },
    { NULL, NULL }
 };
