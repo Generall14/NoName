@@ -315,7 +315,77 @@ void test_push_fifo()
 	"No buffers available - should return zero");
 }
 
-
+void test_push_command()
+{
+	sprot_fifo fifo;
+	uint8_t ibuff[IBUFF_SIZE];
+	uint8_t writted;
+	
+	// No buffers available
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FULL;
+	fifo.buffs[1].status = SPROT_FULL;
+	writted = sp_push_command_to_fifo(&fifo, ibuff, 10);
+	TEST_CHECK_P(writted==0, \
+	"No buffers available - should return zero");
+	
+	// Write to SPROT_FILLING buff
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_FILLING;
+	writted = sp_push_command_to_fifo(&fifo, ibuff, 2);
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
+	"Write to SPROT_FILLING buff - buff should stay in SPROT_FILLING");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
+	"Write to SPROT_FILLING buff - write offset should not be updated");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"Write to SPROT_FILLING buff - input data should not be changed");
+	TEST_CHECK_P(writted==0, \
+	"Write to SPROT_FILLING buff - should return zero");
+	
+	// ibuff bigger than buffer available size
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_EMPTY;
+	writted = sp_push_command_to_fifo(&fifo, ibuff, IBUFF_SIZE);
+	TEST_CHECK_P(writted==PACKAGE_DATA_BYTES+4, \
+	"ibuff bigger than buffer available size - should return available size");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"ibuff bigger than buffer available size - buff should be changed to SPROT_FULL");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), PACKAGE_DATA_BYTES+4)==0, \
+	"ibuff bigger than buffer available size - data should be coppied");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"ibuff bigger than buffer available size - input data should not be changed");
+	
+	// ibuff less than buffer available size
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_EMPTY;
+	writted = sp_push_command_to_fifo(&fifo, ibuff, 10);
+	TEST_CHECK_P(writted==10, \
+	"ibuff less than buffer available size - should return ibuff size");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"ibuff less than buffer available size - buff should be changed to SPROT_FULL");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 10)==0, \
+	"ibuff less than buffer available size - data should be coppied");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"ibuff less than buffer available size - input data should not be changed");
+	
+	// one byte of ibuff
+	memset(&fifo, 0x00, sizeof(fifo));
+	prepare_idata(ibuff);
+	fifo.buffs[0].status = SPROT_EMPTY;
+	writted = sp_push_command_to_fifo(&fifo, ibuff, 1);
+	TEST_CHECK_P(writted==1, \
+	"one byte of ibuff - should return ibuff size");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
+	"one byte of ibuff - buff should be changed to SPROT_FULL");
+	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 1)==0, \
+	"one byte of ibuff - data should be coppied");
+	TEST_CHECK_P(validate_idata(ibuff), \
+	"one byte of ibuff - input data should not be changed");
+}
 
 
 

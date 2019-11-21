@@ -21,5 +21,6 @@ TEST_LIST = {
    { "test_get_tail_fifo", test_get_tail_fifo },
    { "test_timeout_head", test_timeout_head },
    { "test_push_fifo", test_push_fifo },
+   { "test_push_command", test_push_command },
    { NULL, NULL }
 };
