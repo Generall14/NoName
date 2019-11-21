@@ -20,7 +20,7 @@ void sprot_init_fifo(sprot_fifo* fifo)
 
 void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*))
 {
-
+	//TODO: implementation
 }
 
 void spr_timeout_head(sprot_fifo* fifo)
@@ -104,6 +104,7 @@ uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes)
 
 uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes)
 {
+	//TODO: implementation
 	return 0xFF;
 }
 

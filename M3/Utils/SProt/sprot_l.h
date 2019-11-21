@@ -10,9 +10,18 @@
  * 1. All fifo structures have to be initialized by sprot_init_fifo
  * 2. Call repetitively process_fifo and spr_timeout_head.
  * 3. Push new data into fifo by sp_push_bytes_to_fifo.
+ * 4. Push full command (to output fifo) by sp_push_command_to_fifo.
+ *
+ * Receive fifo:
+ * media -> sp_push_bytes_to_fifo
+ * loop -> spr_timeout_head
+ * loop -> process_fifo -> exec input data by functions
+ *
+ * Transmit fifo:
+ * somewhere in code -> sp_push_command_to_fifo
+ * loop -> process_fifo -> send to media by function
  *
  * TODO: better way to timeout commands?.
- * TODO: unit tests for process_fifo
  */
 
 #include <stdint.h>
@@ -82,6 +91,7 @@ uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 /**
  * Pushes full command into fifo (instantly changes state to SPROT_FULL, ignoring
  * timeouts).
+ * //TODO: implementation
  */
 uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
 
