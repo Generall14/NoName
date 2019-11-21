@@ -9,7 +9,7 @@ char invokes[4];
 #define F01_SIZE 2
 #define F01_CMD 0x170
 #define F02_OFF 1
-#define F02_SIZE 5
+#define F02_SIZE 0xFF
 #define F02_CMD 0x11
 #define F03_OFF 2
 #define F03_SIZE 0
