@@ -6,6 +6,4 @@ CubeM3/CubeM3.elf.launch
 CubeM3/STM32F103VB_FLASH.ld
 astyle
 *.out
-*.odt
 *.pdf
-SProt/*
