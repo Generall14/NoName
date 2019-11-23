@@ -7,3 +7,7 @@ CubeM3/STM32F103VB_FLASH.ld
 astyle
 *.out
 *.pdf
+*.log
+*.toc
+*.aux
+*.synctex.gz
