@@ -1,0 +1,20 @@
+\newpage
+
+\section{Komunikaty}
+\label{Sec_komunikaty}
+
+\subsection{Hello \texttt{(0x100)}}
+\label{hello}
+Komunikat testowy, urządzenie docelowe powinno odpowiedzieć komendą \nameref{reHello}. Nie zawiera ładunku.
+
+\subsection{ReHello \texttt{(0x000)}}
+\label{reHello}
+Komenda odsyłana po odebraniu \nameref{hello}.
+\begin{longtable}{|p{0.1\textwidth}|p{0.8\textwidth}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} ... & \textbf{Desc}: ciąg tekstowy ASCII z nazwą urządzenia.\\
+	\hline
+\end{longtable}

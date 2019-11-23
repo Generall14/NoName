@@ -1,0 +1,43 @@
+\newpage
+
+\section{Pakiet}
+\label{Sec_pakiet}
+
+\begin{longtable}{|p{0.1\textwidth}|p{0.8\textwidth}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} & \textbf{Start}: stała wartość rozpoczynająca pakiet, zawsze równa \texttt{0x5A}\\
+	\hline
+	\texttt{1} & \\
+			& \begin{tabular}{|p{0.07\textwidth}|p{0.63\textwidth}|}
+				\hline
+				\textbf{Bit} & \textbf{Opis}\\ 
+				\hline
+				\hline
+				0 -- 6 & \textbf{Bytes}: liczba bajtów ładunku, od 0 do 64.\\
+				\hline
+				7 & \textbf{CmdH}: najstarszy bit komendy.\\
+				\hline
+			\end{tabular}\\
+	\hline
+	\texttt{2} & \textbf{CmdL}: młodszy bajt komendy.\\
+				& \textbf{Cmd = CmdL | CmdH<<8}: Komanda pakietu.
+	 \\
+	\hline
+	\texttt{3} ... & \textbf{Ładunek}: ładunek komendy, liczba bajtów w ładunku zapisana w polu \textbf{Bytes}.\\
+	\hline
+	\texttt{3} + \textbf{Start} & \textbf{Crc}: suma kontrolna obliczana od pola \textbf{Start} do pola \textbf{Ładunek} włącznie. \\
+	\hline
+\end{longtable}
+
+Maksymalny czas nadawania pakietu to $1 ms$ (od nadania bajtu Start), po tym czasie dane zostaną odrzucone.
+
+Nieznany numer komendy, nieprawidłowy rozmiar ładunku, błędna wartość pola Start oraz nieprawidłowa wartość sumy kontrolnej spowodują odrzucenie komendy.
+
+Transmisja przebiega w trybie master-slave.
+
+\subsection{Suma kontrolna}
+\label{SubSec_sumaKontrolna}
+\TODO
