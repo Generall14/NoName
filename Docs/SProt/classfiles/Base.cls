@@ -68,6 +68,11 @@
 \renewcommand{\date}{\formatdate{\day}{\month}{\year}}
 \renewcommand{\dateseparator}{.}
 
+\def \BWIDTH{0.1\textwidth}
+\def \OWIDTH{0.8\textwidth}
+\def \IBWIDTH{0.07\textwidth}
+\def \IOWIDTH{0.63\textwidth}
+
 \bibliographystyle{plain}
 \newcommand{\makebibliography}
 {
@@ -76,9 +81,9 @@
 }
 
 \if@twoside
-	\geometry{left=35mm,top=35mm, right=25mm, bottom=20mm}			%marginesy strony
+	\geometry{left=0.13\paperwidth,top=0.1\paperheight, right=0.07\paperwidth, bottom=0.1\paperheight}			%marginesy strony
 \else
-	\geometry{left=30mm,top=35mm, right=30mm, bottom=20mm}			%marginesy strony
+	\geometry{left=0.1\paperwidth,top=0.1\paperheight, right=0.1\paperwidth, bottom=0.1\paperheight}			%marginesy strony
 \fi
 
 \renewcommand*\rmdefault{qhv}										%Czcionka
@@ -149,9 +154,9 @@
 	\thispagestyle{empty}
 	
 	%\AddToShipoutPicture*{\put(0,0){\includegraphics{\TITLEPICTURE}}}
-	\vspace*{3cm}
+	\vspace*{0.15\paperheight}
 	
-	\vspace*{2cm}
+	%\vspace*{2cm}
 	
 	\begin{center}
 		\ifdefined\MAINTITLE
