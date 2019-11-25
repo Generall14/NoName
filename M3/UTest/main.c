@@ -25,5 +25,6 @@ TEST_LIST = {
    { "test_spexe_valid_commands", test_spexe_valid_commands },
    { "test_spexe_invalid_commands", test_spexe_invalid_commands },
    { "test_spexe_null_ptrs", test_spexe_null_ptrs },
+   { "test_spexe_crc", test_spexe_crc },
    { NULL, NULL }
 };

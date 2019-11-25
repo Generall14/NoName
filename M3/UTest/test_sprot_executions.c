@@ -23,7 +23,7 @@ sprot_buff_entry* passed_ptr;
 
 uint8_t crc(void* buff, uint8_t bytes)
 {
-	return 0xFF; //TODO
+	return 0xFE; //TODO
 }
 
 void f01(sprot_buff_entry* buff)
@@ -254,5 +254,28 @@ void test_spexe_null_ptrs()
 	"Valid but unknown command - empty pointer to function - no commands should be executed");
 }
 
-
+void test_spexe_crc()
+{
+	uint8_t tab1[] = {0x11, 0x00, 0x57, 0x91, 0x00};
+	uint8_t s = sizeof(tab1)/sizeof(tab1[0]);
+	TEST_CHECK_P(crc(tab1, s)==calc_crc(tab1, s), \
+	"calc crc, data set 1");
+	
+	
+	uint8_t tab2[] = {0x11, 0x00, 0x57, 0x91, 0x00};
+	s = sizeof(tab2)/sizeof(tab2[0]);
+	TEST_CHECK_P(crc(tab2, s)==calc_crc(tab2, s), \
+	"calc crc, data set 1");
+	
+	
+	uint8_t tab3[] = {0x11, 0x00, 0x57, 0x91, 0x00};
+	s = sizeof(tab3)/sizeof(tab3[0]);
+	TEST_CHECK_P(crc(tab3, s)==calc_crc(tab3, s), \
+	"calc crc, data set 1");
+	
+	uint8_t tab4[] = {0x11, 0x00, 0x57, 0x91, 0x00};
+	s = sizeof(tab4)/sizeof(tab4[0]);
+	TEST_CHECK_P(crc(tab4, s)==calc_crc(tab4, s), \
+	"calc crc, data set 1");
+}
 

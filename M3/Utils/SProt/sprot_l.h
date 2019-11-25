@@ -69,7 +69,6 @@ void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
  * Must be called in loop to execute commands.
- * TODO: implementations.
  */
 void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint8_t tbl_entries);
 

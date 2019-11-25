@@ -17,4 +17,5 @@ void test_push_command();
 void test_spexe_valid_commands();
 void test_spexe_invalid_commands();
 void test_spexe_null_ptrs();
+void test_spexe_crc();
 #endif
