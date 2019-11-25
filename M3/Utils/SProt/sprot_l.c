@@ -38,9 +38,9 @@ static bool is_buff_cmd_ok(sprot_buff_entry* buff)
 	if(buff->write_offseet != (uint8_t)((uint8_t)(buff->cmdHSize&0x7F) + 4))
 		return false;
 
-//	uint8_t crc = calc_crc(&(buff->start), buff->write_offseet);
-//	if(buff->data_and_crc[buff->cmdHSize&0x7F] != crc)
-//		return false;
+	uint8_t crc = calc_crc(&(buff->start), buff->write_offseet);
+	if(buff->data_and_crc[buff->cmdHSize&0x7F] != crc)
+		return false;
 
 	return true;
 }
@@ -69,7 +69,7 @@ void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(spr
 		if(!is_buff_cmd_ok(entry))
 			continue;
 
-		uint16_t cmd = (entry->cmdHSize<<1)&0x100 | entry->cmdL;
+		uint16_t cmd = ((entry->cmdHSize<<1)&0x100) | entry->cmdL;
 		sprot_efunc* fun = get_fun(table, cmd, tbl_entries);
 		if(!fun)
 		{
