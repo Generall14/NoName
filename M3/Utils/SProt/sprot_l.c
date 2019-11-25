@@ -18,8 +18,75 @@ void sprot_init_fifo(sprot_fifo* fifo)
 		fifo->buffs[i].status = SPROT_EMPTY;
 }
 
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*))
+uint8_t calc_crc(uint8_t* buff, uint8_t bytes)
 {
+	//TODO: implementation
+	return 0xff;
+}
+
+/**
+ * True - command is ok.
+ */
+static bool is_buff_cmd_ok(sprot_buff_entry* buff)
+{
+	if((uint8_t)(buff->cmdHSize&0x7F) > 64)
+		return false;
+
+	if(buff->start != 0x5A)
+		return false;
+
+	if(buff->write_offseet != (uint8_t)((uint8_t)(buff->cmdHSize&0x7F) + 4))
+		return false;
+
+	//TODO: implementation
+	return true;
+}
+
+static sprot_efunc* get_fun(sprot_efunc table[], uint16_t cmd, uint8_t tbl_entries)
+{
+	for(int i=0;i<tbl_entries;i++)
+	{
+		if(table[i].cmd==cmd)
+			return &(table[i]);
+	}
+	return 0;
+}
+
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint8_t tbl_entries)
+{
+	sprot_buff_entry* entry = 0;
+	while(1)
+	{
+		entry = get_spfifo_tail(fifo);
+
+		if(!entry)
+			return;
+		entry->status = SPROT_EMPTY;
+
+		if(!is_buff_cmd_ok(entry))
+			continue;
+
+		uint16_t cmd = (entry->cmdHSize<<1)&0x100 | entry->cmdL;
+		sprot_efunc* fun = get_fun(table, cmd, tbl_entries);
+		if(!fun)
+		{
+			if(default_fun)
+				(*default_fun)(entry);
+			continue;
+		}
+
+		if(fun->size != 0xFF)
+		{
+			if(fun->size != (uint8_t)(entry->cmdHSize&0x7F))
+				continue;
+		}
+
+		if(fun)
+		{
+			if(fun->fun_ptr)
+				fun->fun_ptr(entry);
+		}
+	}
 	//TODO: implementation
 }
 

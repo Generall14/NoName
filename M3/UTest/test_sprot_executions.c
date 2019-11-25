@@ -54,6 +54,7 @@ sprot_efunc tbl[] = {{.size=F01_SIZE, .cmd=F01_CMD, .fun_ptr=f01}, \
 					 {.size=F02_SIZE, .cmd=F02_CMD, .fun_ptr=f02}, \
 					 {.size=F03_SIZE, .cmd=F03_CMD, .fun_ptr=f03}, \
 					 {.size=FNULL_SIZE, .cmd=FNULL_CMD, .fun_ptr=0}};
+#define ENTR 4
 
 void prepare_cmd(sprot_buff_entry* buff, uint16_t cmd, uint8_t size, bool invalid_offset, bool invalid_start, bool invalid_crc)
 {
@@ -67,6 +68,9 @@ void prepare_cmd(sprot_buff_entry* buff, uint16_t cmd, uint8_t size, bool invali
 		
 	buff->cmdHSize = (cmd>>1)&0x80 | size&0x7F;
 	buff->cmdL = cmd&0xFF;
+	
+	if(size>64)
+		size = 64;
 	
 	for(int i=0;i<size;i++)
 		buff->data_and_crc[i] = (i^cmd^size)&0xFF;
@@ -87,14 +91,14 @@ void test_spexe_valid_commands()
 	char expected1[]={1, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F01_CMD, F01_SIZE, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid command with long cmd - proper command should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
 	"Valid command with long cmd - buff should be changed to SPROT_EMPTY");
 	TEST_CHECK_P(passed_ptr==(sprot_buff_entry*)&(fifo.buffs[0]), \
 	"Valid command with long cmd - proper pointer should be passed");
-	
+
 	// Valid command with variable size, pt1
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FULL;
@@ -102,14 +106,14 @@ void test_spexe_valid_commands()
 	char expected2[]={0, 1, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F02_CMD, 1, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid command with variable size, pt1 - proper command should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
 	"Valid command with variable size, pt1 - buff should be changed to SPROT_EMPTY");
 	TEST_CHECK_P(passed_ptr==(sprot_buff_entry*)&(fifo.buffs[0]), \
 	"Valid command with variable size, pt1 - proper pointer should be passed");
-	
+
 	// Valid command with variable size, pt2
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FULL;
@@ -117,7 +121,7 @@ void test_spexe_valid_commands()
 	char expected3[]={0, 1, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F02_CMD, 10, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid command with variable size, pt2 - proper command should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -132,14 +136,14 @@ void test_spexe_valid_commands()
 	char expected4[]={0, 0, 1, 0};
 	prepare_cmd(&(fifo.buffs[0]), F03_CMD, F03_SIZE, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid command with no data - proper command should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
 	"Valid command with no data - buff should be changed to SPROT_EMPTY");
 	TEST_CHECK_P(passed_ptr==(sprot_buff_entry*)&(fifo.buffs[0]), \
 	"Valid command with no data - proper pointer should be passed");
-	
+
 	// Valid but unknown command
 	memset(&fifo, 0x00, sizeof(fifo));
 	fifo.buffs[0].status = SPROT_FULL;
@@ -147,7 +151,7 @@ void test_spexe_valid_commands()
 	char expected5[]={0, 0, 0, 1};
 	prepare_cmd(&(fifo.buffs[0]), 0xAA, 5, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid but unknown command - default command should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -166,7 +170,7 @@ void test_spexe_invalid_commands()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected1[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F01_CMD, F01_SIZE, false, false, true);
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Invalid crc - no commands should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -178,7 +182,7 @@ void test_spexe_invalid_commands()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected2[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F01_CMD, F01_SIZE, false, true, false);
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Invalid start byte - no commands should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -190,7 +194,7 @@ void test_spexe_invalid_commands()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected3[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F01_CMD, F01_SIZE, true, false, false);
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Invalid offset - no commands should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -202,7 +206,7 @@ void test_spexe_invalid_commands()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected4[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F01_CMD, F01_SIZE+1, false, false, false);
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Invalid command size - no commands should be executed");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
@@ -214,7 +218,7 @@ void test_spexe_invalid_commands()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected5[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), F02_CMD, 65, false, false, false);
-	process_fifo(&fifo, tbl, fdef);
+	process_fifo(&fifo, tbl, fdef, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Known command with variable size, cmd_size bigger than allowed - no "
 	"commands should be executed");
@@ -234,7 +238,7 @@ void test_spexe_null_ptrs()
 	char expected1[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), FNULL_CMD, FNULL_SIZE, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, 0);
+	process_fifo(&fifo, tbl, 0, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid command - empty pointer to function - no commands should be executed");
 	
@@ -245,7 +249,7 @@ void test_spexe_null_ptrs()
 	char expected2[]={0, 0, 0, 0};
 	prepare_cmd(&(fifo.buffs[0]), 0xAA, 5, false, false, false);
 	passed_ptr = 0;
-	process_fifo(&fifo, tbl, 0);
+	process_fifo(&fifo, tbl, 0, ENTR);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid but unknown command - empty pointer to function - no commands should be executed");
 }
