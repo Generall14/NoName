@@ -1,5 +1,5 @@
-#ifndef CRC5_HPP
-#define CRC5_HPP
+#ifndef CRC8_HPP
+#define CRC8_HPP
 
 #include <stdint.h>
 #include <memory>
@@ -8,11 +8,11 @@
  * @author mgr inż. W. Kogut
  */
 
-#define D_POLY_CRC5 0x1D
-#define D_INITIAL_CRC5 0x14
+#define D_POLY_CRC8 0xCF
+#define D_INITIAL_CRC8 0x55
 
 /**
- * Oblicza crc5 sposobem łopatologicznym, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
+ * Oblicza crc8 sposobem łopatologicznym, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
  * przepychające crc.
  * @param ptr - wskaźnik na dane.
  * @param len - długośc danych (w bajtach).
@@ -22,12 +22,12 @@
  * @param reversedCrc - true: po zakończeniu obliczeń zostanie zamieniona kolejność bitów sumy crc.
  * @return wynik obliczeń.
  */
-uint8_t crc5(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC5, uint8_t poly=D_POLY_CRC5, bool lsbFirst=false, bool reversedCrc=false);
+uint8_t crc8(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC8, uint8_t poly=D_POLY_CRC8, bool lsbFirst=false, bool reversedCrc=false);
 
 
 
 /**
- * Oblicza crc5 metodą tablicową, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
+ * Oblicza crc8 metodą tablicową, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
  * przepychające crc. Bity pompowane od najbardziej znaczących, suma nie odwracana.
  * @param ptr - wskaźnik na dane.
  * @param len - długośc danych (w bajtach).
@@ -35,17 +35,17 @@ uint8_t crc5(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC5, uint8_
  * @param poly - wielomian.
  * @return wynik obliczeń.
  */
-uint8_t crc5t(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC5, uint8_t poly=D_POLY_CRC5);
+uint8_t crc8t(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC8, uint8_t poly=D_POLY_CRC8);
 /**
- * Tworzy tablicę do obliczania crc8 (dla funkcji crc5t) metodą tablicową.
+ * Tworzy tablicę do obliczania crc8 (dla funkcji crc8t) metodą tablicową.
  * @param poly - wielomian.
  */
-std::shared_ptr<uint8_t> makeCrc5table(uint8_t poly=D_POLY_CRC5);
+std::shared_ptr<uint8_t> makeCrc8table(uint8_t poly=D_POLY_CRC8);
 
 
 
 /**
- * Oblicza crc5 metodą tablicową, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
+ * Oblicza crc8 metodą tablicową, nie nadaje się do rekurencyjnego doliczania crc, uzupełnia wejściowy ciąg danych o bajty zerowe
  * przepychające crc. Bity pompowane od najmniej znaczących, suma odwracana bitowo.
  * @param ptr - wskaźnik na dane.
  * @param len - długośc danych (w bajtach).
@@ -53,11 +53,11 @@ std::shared_ptr<uint8_t> makeCrc5table(uint8_t poly=D_POLY_CRC5);
  * @param poly - wielomian.
  * @return wynik obliczeń.
  */
-uint8_t crc5tLsbFirst(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC5, uint8_t poly=D_POLY_CRC5);
+uint8_t crc8tLsbFirst(const char* ptr, uint16_t len, uint8_t sum = D_INITIAL_CRC8, uint8_t poly=D_POLY_CRC8);
 /**
- * Tworzy tablicę do obliczania crc8 (dla funkcji crc5tLsbFirst) metodą tablicową.
+ * Tworzy tablicę do obliczania crc8 (dla funkcji crc8tLsbFirst) metodą tablicową.
  * @param poly - wielomian.
  */
-std::shared_ptr<uint8_t> makeCrc5tableLsbFirst(uint8_t poly=D_POLY_CRC5);
+std::shared_ptr<uint8_t> makeCrc8tableLsbFirst(uint8_t poly=D_POLY_CRC8);
 
 #endif
