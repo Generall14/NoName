@@ -111,9 +111,6 @@ sprot_buff_entry* get_spfifo_head(sprot_fifo* fifo);
  */
 sprot_buff_entry* get_spfifo_tail(sprot_fifo* fifo);
 
-/**
- * TODO: implementation
- */
 uint8_t calc_crc(uint8_t* buff, uint8_t bytes);
 
 #endif

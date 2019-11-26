@@ -40,4 +40,11 @@ Transmisja przebiega w trybie master-slave.
 
 \subsection{Suma kontrolna}
 \label{SubSec_sumaKontrolna}
-\TODO
+
+Suma kontrolna obliczana jest od pola \textbf{Start} do pola \textbf{Ładunek} włącznie.
+
+CRC-8:
+\begin{itemize}
+	\item $init = 0x55$
+	\item $poly = 0xCF$
+\end{itemize}
