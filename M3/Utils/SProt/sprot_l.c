@@ -85,7 +85,7 @@ static sprot_efunc* get_fun(sprot_efunc table[], uint16_t cmd, uint8_t tbl_entri
 	return 0;
 }
 
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint8_t tbl_entries)
+void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint16_t tbl_entries)
 {
 	sprot_buff_entry* entry = 0;
 	while(1)

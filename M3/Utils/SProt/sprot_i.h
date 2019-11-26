@@ -4,6 +4,14 @@
 #include "stm32f1xx_hal.h"
 #include "sprot_l.h"
 
+void ififo_def(sprot_buff_entry* buff);
+
+#define HELLO_CMD 0x100
+#define HELLO_SIZE 0
+void ififo_hello(sprot_buff_entry* buff);
+
 extern sprot_fifo pc_fifo;
+extern sprot_efunc ififo_tbl[];
+extern const uint16_t ififo_tbl_size;
 
 #endif

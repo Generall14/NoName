@@ -67,7 +67,7 @@ int main(void)
 	while (1)
 	{
 		blocking_delay_ms(1);
-		//process_fifo(&pc_fifo); //TODO
+		process_fifo(&pc_fifo, ififo_tbl, ififo_def, ififo_tbl_size);
 
 		LED_SWAP(LED0);
 		LED_ON(LED1);
