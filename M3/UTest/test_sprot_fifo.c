@@ -326,76 +326,53 @@ void test_push_command()
 	prepare_idata(ibuff);
 	fifo.buffs[0].status = SPROT_FULL;
 	fifo.buffs[1].status = SPROT_FULL;
-	writted = sp_push_command_to_fifo(&fifo, ibuff, 10);
+	writted = sp_push_command_to_fifo(&fifo, 1, ibuff, 10);
 	TEST_CHECK_P(writted==0, \
 	"No buffers available - should return zero");
-	
-	// Write to SPROT_FILLING buff
-	memset(&fifo, 0x00, sizeof(fifo));
-	prepare_idata(ibuff);
-	fifo.buffs[0].status = SPROT_FILLING;
-	writted = sp_push_command_to_fifo(&fifo, ibuff, 2);
-	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FILLING, \
-	"Write to SPROT_FILLING buff - buff should stay in SPROT_FILLING");
-	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
-	"Write to SPROT_FILLING buff - write offset should not be updated");
-	TEST_CHECK_P(validate_idata(ibuff), \
-	"Write to SPROT_FILLING buff - input data should not be changed");
-	TEST_CHECK_P(writted==0, \
-	"Write to SPROT_FILLING buff - should return zero");
 	
 	// ibuff bigger than buffer available size
 	memset(&fifo, 0x00, sizeof(fifo));
 	prepare_idata(ibuff);
 	fifo.buffs[0].status = SPROT_EMPTY;
-	writted = sp_push_command_to_fifo(&fifo, ibuff, IBUFF_SIZE);
-	TEST_CHECK_P(writted==PACKAGE_DATA_BYTES+4, \
-	"ibuff bigger than buffer available size - should return available size");
-	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
-	"ibuff bigger than buffer available size - buff should be changed to SPROT_FULL");
-	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), PACKAGE_DATA_BYTES+4)==0, \
-	"ibuff bigger than buffer available size - data should be coppied");
+	writted = sp_push_command_to_fifo(&fifo, 1, ibuff, IBUFF_SIZE);
+	TEST_CHECK_P(writted==0, \
+	"ibuff bigger than buffer available size - should return zero");
+	TEST_CHECK_P(fifo.buffs[0].status==SPROT_EMPTY, \
+	"ibuff bigger than buffer available size - buff should not be changed");
 	TEST_CHECK_P(validate_idata(ibuff), \
 	"ibuff bigger than buffer available size - input data should not be changed");
 	
-	// ibuff less than buffer available size
+	// command without payload
 	memset(&fifo, 0x00, sizeof(fifo));
 	prepare_idata(ibuff);
 	fifo.buffs[0].status = SPROT_EMPTY;
-	writted = sp_push_command_to_fifo(&fifo, ibuff, 10);
-	TEST_CHECK_P(writted==10, \
-	"ibuff less than buffer available size - should return ibuff size");
+	uint8_t exp1[] = {0x5a, 0x80, 0x11};
+	writted = sp_push_command_to_fifo(&fifo, 0x111, ibuff, 0);
+	TEST_CHECK_P(writted==4, \
+	"command without payload - should return full package size");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
-	"ibuff less than buffer available size - buff should be changed to SPROT_FULL");
-	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 10)==0, \
-	"ibuff less than buffer available size - data should be coppied");
+	"command without payload - buff should be changed to SPROT_FULL");
 	TEST_CHECK_P(validate_idata(ibuff), \
-	"ibuff less than buffer available size - input data should not be changed");
+	"command without payload - input data should not be changed");
+	TEST_CHECK_P(memcmp((void*)exp1, (void*)&(fifo.buffs[0].start), 3)==0, \
+	"command without payload - proper data should be in fifo");
+	TEST_CHECK_P(crc((void*)&(fifo.buffs[0].start), 4)==0, \
+	"command without payload - valid crc should be calculated");
 	
-	// one byte of ibuff
+	// command with payload
 	memset(&fifo, 0x00, sizeof(fifo));
 	prepare_idata(ibuff);
 	fifo.buffs[0].status = SPROT_EMPTY;
-	writted = sp_push_command_to_fifo(&fifo, ibuff, 1);
-	TEST_CHECK_P(writted==1, \
-	"one byte of ibuff - should return ibuff size");
+	uint8_t exp2[] = {0x5a, 0x82, 0x02, 0x20, 0x21};
+	writted = sp_push_command_to_fifo(&fifo, 0x02, ibuff, 2);
+	TEST_CHECK_P(writted==6, \
+	"command with payload - should return full package size");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
-	"one byte of ibuff - buff should be changed to SPROT_FULL");
-	TEST_CHECK_P(memcmp((void*)ibuff, (void*)&(fifo.buffs[0].start), 1)==0, \
-	"one byte of ibuff - data should be coppied");
+	"command with payload - buff should be changed to SPROT_FULL");
 	TEST_CHECK_P(validate_idata(ibuff), \
-	"one byte of ibuff - input data should not be changed");
+	"command with payload - input data should not be changed");
+	TEST_CHECK_P(memcmp((void*)exp2, (void*)&(fifo.buffs[0].start), 5)==0, \
+	"command with payload - proper data should be in fifo");
+	TEST_CHECK_P(crc((void*)&(fifo.buffs[0].start), 6)==0, \
+	"command with payload - valid crc should be calculated");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
