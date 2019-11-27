@@ -4,6 +4,10 @@
 #include "stm32f1xx_hal.h"
 #include "sprot_l.h"
 
+#define CMD_REHELLO 0x000
+#define CMD_REHELLO_TXT "SProt-M3"
+#define CMD_REHELLO_BYTES 8
+
 // Data from PC
 
 void ififo_def(sprot_buff_entry* buff);

@@ -208,22 +208,26 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 	if(head == 0)
 		return 0;
 
+	if(bytes>PACKAGE_DATA_BYTES)
+		return 0;
+
 	// Check and update status
 	if(head->status==SPROT_EMPTY)
 		head->status = SPROT_FULL;
 	else
 		return 0;
+	head->write_offseet = bytes+4;
 
 	// Copy data
-//	size_t bytes_to_cpy = SPROT_BUFF_CAPACITY-head->write_offseet;
-//	if(bytes<bytes_to_cpy)
-//		bytes_to_cpy = bytes;
-//	memcpy(&(head->start)+head->write_offseet, buff, bytes_to_cpy);
-//	head->write_offseet += bytes_to_cpy;
+	memcpy(&(head->data_and_crc), data, bytes);
 
-//	return bytes_to_cpy;
+	// Set other data
+	head->start = 0x5A;
+	head->cmdHSize = ((cmd>>1)&0x80) | (bytes&0x7F);
+	head->cmdL = cmd&0xFF;
+	head->data_and_crc[bytes] = calc_crc(&(head->start), bytes+3);
 
-	return 0xFF;
+	return bytes+4;
 }
 
 

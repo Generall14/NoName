@@ -17,10 +17,10 @@ void ififo_def(sprot_buff_entry* buff)
 
 void ififo_hello(sprot_buff_entry* buff)
 {
-	sp_push_command_to_fifo(&rpc_fifo, "123", 3);
+	sp_push_command_to_fifo(&rpc_fifo, CMD_REHELLO, CMD_REHELLO_TXT, CMD_REHELLO_BYTES);
 }
 
 void irfifo_def(sprot_buff_entry* buff)
 {
-	CDC_Transmit_FS("msg", 3);
+	CDC_Transmit_FS(&(buff->start), (buff->cmdHSize&0x7F)+4);
 }

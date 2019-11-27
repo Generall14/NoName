@@ -329,6 +329,8 @@ void test_push_command()
 	writted = sp_push_command_to_fifo(&fifo, 1, ibuff, 10);
 	TEST_CHECK_P(writted==0, \
 	"No buffers available - should return zero");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
+	"No buffers available - write offset should not be updated");
 	
 	// ibuff bigger than buffer available size
 	memset(&fifo, 0x00, sizeof(fifo));
@@ -341,6 +343,8 @@ void test_push_command()
 	"ibuff bigger than buffer available size - buff should not be changed");
 	TEST_CHECK_P(validate_idata(ibuff), \
 	"ibuff bigger than buffer available size - input data should not be changed");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==0, \
+	"ibuff bigger than buffer available size - write offset should not be updated");
 	
 	// command without payload
 	memset(&fifo, 0x00, sizeof(fifo));
@@ -358,13 +362,15 @@ void test_push_command()
 	"command without payload - proper data should be in fifo");
 	TEST_CHECK_P(crc((void*)&(fifo.buffs[0].start), 4)==0, \
 	"command without payload - valid crc should be calculated");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==4, \
+	"command without payload - write offset should be updated");
 	
 	// command with payload
 	memset(&fifo, 0x00, sizeof(fifo));
 	prepare_idata(ibuff);
 	fifo.buffs[0].status = SPROT_EMPTY;
-	uint8_t exp2[] = {0x5a, 0x82, 0x02, 0x20, 0x21};
-	writted = sp_push_command_to_fifo(&fifo, 0x02, ibuff, 2);
+	uint8_t exp2[] = {0x5a, 0x82, 0x02, 20, 21};
+	writted = sp_push_command_to_fifo(&fifo, 0x102, ibuff, 2);
 	TEST_CHECK_P(writted==6, \
 	"command with payload - should return full package size");
 	TEST_CHECK_P(fifo.buffs[0].status==SPROT_FULL, \
@@ -375,4 +381,6 @@ void test_push_command()
 	"command with payload - proper data should be in fifo");
 	TEST_CHECK_P(crc((void*)&(fifo.buffs[0].start), 6)==0, \
 	"command with payload - valid crc should be calculated");
+	TEST_CHECK_P(fifo.buffs[0].write_offseet==6, \
+	"command with payload - write offset should be updated");
 }
