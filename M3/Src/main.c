@@ -23,6 +23,7 @@ int main(void)
 	SystemClock_Config();
 
 	sprot_init_fifo(&pc_fifo);
+	sprot_init_fifo(&rpc_fifo);
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
@@ -68,6 +69,7 @@ int main(void)
 	{
 		blocking_delay_ms(1);
 		process_fifo(&pc_fifo, ififo_tbl, ififo_def, ififo_tbl_size);
+		process_fifo(&rpc_fifo, irfifo_tbl, irfifo_def, irfifo_tbl_size);
 
 		LED_SWAP(LED0);
 		LED_ON(LED1);

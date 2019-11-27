@@ -91,7 +91,7 @@ uint8_t sp_push_bytes_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
  * Pushes full command into fifo (instantly changes state to SPROT_FULL, ignoring
  * timeouts).
  */
-uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint8_t* buff, uint8_t bytes);
+uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, uint8_t bytes);
 
 //================================
 
