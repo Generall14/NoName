@@ -1,4 +1,5 @@
 #include "sprot_i.h"
+#include "usbd_cdc_if.h"
 
 sprot_fifo pc_fifo;
 sprot_fifo rpc_fifo;
@@ -17,10 +18,10 @@ void ififo_def(sprot_buff_entry* buff)
 
 void ififo_hello(sprot_buff_entry* buff)
 {
-	sp_push_command_to_fifo(&rpc_fifo, CMD_REHELLO, CMD_REHELLO_TXT, CMD_REHELLO_BYTES);
+	sp_push_command_to_fifo(&rpc_fifo, CMD_REHELLO, "SProt-M3-dev", 12);
 }
 
 void irfifo_def(sprot_buff_entry* buff)
 {
-	CDC_Transmit_FS(&(buff->start), (buff->cmdHSize&0x7F)+4);
+	while(CDC_Transmit_FS(&(buff->start), (buff->cmdHSize&0x7F)+4)==USBD_BUSY);
 }
