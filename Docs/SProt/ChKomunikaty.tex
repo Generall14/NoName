@@ -18,3 +18,33 @@ Komenda odsyłana po odebraniu \nameref{hello}.
 	\texttt{0} ... & \textbf{Desc}: ciąg tekstowy ASCII z nazwą urządzenia.\\
 	\hline
 \end{longtable}
+
+\subsection{GetSec \texttt{(0x101)}}
+\label{getSec}
+Zapytanie o odczyt sekcji danych, urządzenie powinno odpowiedzieć \nameref{reGetSec}.
+\begin{longtable}{|p{\BWIDTH}|p{\OWIDTH}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} & \textbf{Nr}: numer sekcji danych do odczytu.\\
+	\hline
+	\texttt{1 -- 2} & \textbf{Offset}: offset odczytu z sekcji danych.\\
+	\hline
+\end{longtable}
+
+\subsection{ReGetSec \texttt{(0x001)}}
+\label{reGetSec}
+Odpowiedź na \nameref{getSec}, zawiera odczytane dane sekcji.
+\begin{longtable}{|p{\BWIDTH}|p{\OWIDTH}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} & \textbf{Nr}: numer odczytywanej sekcji danych.\\
+	\hline
+	\texttt{1 -- 2} & \textbf{Offset}: offset początku odczytu.\\
+	\hline
+	\texttt{3} ... & \textbf{Data}: odczytane dane sekcji. Przesłana zostanie liczba bajtów aż do zakończenia sekcji danych lub do zapełnienia komendy (61 bajtów). Pole \textbf{Data} będzie puste gdy podany zostanie nieistniejący numer sekcji lub \textbf{Offset} będzie wskazywał poza zakres danej sekcji.\\
+	\hline
+\end{longtable}
