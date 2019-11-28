@@ -63,9 +63,19 @@ typedef struct
 	void (*fun_ptr)(sprot_buff_entry*);
 } sprot_efunc;
 
+typedef struct
+{
+	uint8_t* data_ptr; // Pointer to data section
+	uint16_t bytes; // Bytes in data section
+	void (*fun_ptr_read)(sprot_buff_entry*, sprot_section*); // function called during read request
+	void (*fun_ptr_write)(sprot_buff_entry*, sprot_section*); // function called during write request
+} sprot_section; // TODO: some lockers / timestamps?
+
 //======= User functions =========
 
 void sprot_init_fifo(sprot_fifo* fifo);
+void sprot_write_sec(sprot_buff_entry* buff); // TODO: implementation, descriptions
+void sprot_read_sec(sprot_buff_entry* buff); // TODO: implementation, descriptions
 
 /**
  * Must be called in loop to execute commands.
