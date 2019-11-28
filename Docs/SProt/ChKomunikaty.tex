@@ -27,7 +27,7 @@ Zapytanie o odczyt sekcji danych, urządzenie powinno odpowiedzieć \nameref{reG
 	\textbf{Bajt} & \textbf{Opis}\\ 
 	\hline
 	\hline
-	\texttt{0} & \textbf{Nr}: numer sekcji danych do odczytu.\\
+	\texttt{0} & \textbf{Sec}: numer sekcji danych do odczytu.\\
 	\hline
 	\texttt{1 -- 2} & \textbf{Offset}: offset odczytu z sekcji danych.\\
 	\hline
@@ -41,10 +41,56 @@ Odpowiedź na \nameref{getSec}, zawiera odczytane dane sekcji.
 	\textbf{Bajt} & \textbf{Opis}\\ 
 	\hline
 	\hline
-	\texttt{0} & \textbf{Nr}: numer odczytywanej sekcji danych.\\
+	\texttt{0} & \textbf{Sec}: numer odczytywanej sekcji danych.\\
 	\hline
 	\texttt{1 -- 2} & \textbf{Offset}: offset początku odczytu.\\
 	\hline
 	\texttt{3} ... & \textbf{Data}: odczytane dane sekcji. Przesłana zostanie liczba bajtów aż do zakończenia sekcji danych lub do zapełnienia komendy (61 bajtów). Pole \textbf{Data} będzie puste gdy podany zostanie nieistniejący numer sekcji lub \textbf{Offset} będzie wskazywał poza zakres danej sekcji.\\
+	\hline
+\end{longtable}
+
+\subsection{SetSec \texttt{(0x102)}}
+\label{setSec}
+Żądanie zapisu do sekcji danych, urządzenie powinno odpowiedzieć komendą \nameref{reSetSec}.
+\begin{longtable}{|p{\BWIDTH}|p{\OWIDTH}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} & \textbf{Sec}: numer nadpisywanej sekcji danych.\\
+	\hline
+	\texttt{1 -- 2} & \textbf{Offset}: offset początku zapisu.\\
+	\hline
+	\texttt{3} ... & \textbf{Data}: dane nadpisywanej sekcji, maksymalnie 61 bajtów.\\
+	\hline
+\end{longtable}
+
+\subsection{ReSetSec \texttt{(0x002)}}
+\label{reSetSec}
+Odpowiedź na \nameref{setSec}, zawiera status zapisu sekcji danych.
+\begin{longtable}{|p{\BWIDTH}|p{\OWIDTH}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0} & \textbf{Sec}: numer nadpisywanej sekcji danych.\\
+	\hline
+	\texttt{1 -- 2} & \textbf{Offset}: offset początku zapisu.\\
+	\hline
+	\texttt{3} & \textbf{Status}: status zapisu danych:\\
+	& \begin{tabular}{|p{\IBWIDTH}|p{\IOWIDTH}|}
+		\hline
+		\textbf{Wartość} & \textbf{Opis}\\ 
+		\hline
+		\hline
+		0x00 & \textbf{Ok}: zapis przebiegł pomyślnie.\\
+		\hline
+		0x01 & \textbf{ReadOnly}: sekcja tylko do odczytu, dane nie zostały zmienione.\\
+		\hline
+		0x02 & \textbf{OutOfRange}: wskazane dane (\textbf{Offset}, długość danych) wybiegały poza zakres sekcji, dane nie zostały zmienione.\\
+		\hline
+		0x03 & \textbf{UnknownSec}: brak sekcji danych o wskazanym numerze, dane nie zostały zmienione.\\
+		\hline
+	\end{tabular}\\
 	\hline
 \end{longtable}
