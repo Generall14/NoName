@@ -5,7 +5,8 @@ sprot_fifo pc_fifo;
 sprot_fifo rpc_fifo;
 
 sprot_efunc ififo_tbl[] = {{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}, \
-					 	   {.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}};
+	{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}
+};
 
 sprot_efunc irfifo_tbl[] = {};
 
