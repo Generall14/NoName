@@ -2,6 +2,10 @@
 #include <iomanip>
 #include <cassert>
 
+/**
+ * File generates table of uint8_t values using in calculating CRC on uC. Prints it to 'tab8.txt'
+**/
+
 #include <fstream>
 
 #include "crc8.hpp"
