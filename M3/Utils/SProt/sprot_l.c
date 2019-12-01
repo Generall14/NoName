@@ -231,4 +231,12 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 	return bytes+4;
 }
 
+void sprot_write_sec(sprot_buff_entry* buff)
+{
+	// TODO: implementation, descriptions
+}
 
+void sprot_read_sec(sprot_buff_entry* buff)
+{
+	// TODO: implementation, descriptions
+}
