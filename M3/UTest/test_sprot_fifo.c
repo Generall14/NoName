@@ -3,6 +3,7 @@
 #include <SProt/sprot_l.h>
 #include <stdbool.h>
 #include <string.h>
+#include "fake/crc.h"
 
 extern uint32_t fake_global_clock_us;
 #define TIMESTART 1

@@ -83,6 +83,7 @@ typedef struct
  */
 typedef struct
 {
+	uint8_t number; // Section number
 	uint8_t* data_ptr; // Pointer to data section
 	uint16_t bytes; // Bytes in data section
 	void (*fun_read_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);

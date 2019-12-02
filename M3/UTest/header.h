@@ -8,8 +8,6 @@
 
 #define TEST_CHECK_P(VAL, ...) if(!TEST_CHECK(VAL)){printf(__VA_ARGS__);printf("\n");}
 
-uint8_t crc(void* buff, uint8_t bytes);
-
 void test_test1();
 void test_init_fifo();
 void test_get_head_fifo();
@@ -21,4 +19,9 @@ void test_spexe_valid_commands();
 void test_spexe_invalid_commands();
 void test_spexe_null_ptrs();
 void test_spexe_crc();
+void test_sprot_read_success();
+void test_sprot_read_fail();
+void test_sprot_write_success();
+void test_sprot_write_fail();
+
 #endif
