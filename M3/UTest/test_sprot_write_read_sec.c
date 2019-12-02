@@ -10,6 +10,8 @@ char invokes[6];
 uint8_t* passed_ptr_dst;
 uint8_t* passed_ptr_src;
 uint8_t passed_bytes;
+sprot_fifo ofifo;
+sprot_buff_entry ibuff;
 
 #define FRWS_R_OFF 0
 #define FRWS_W_OFF 1
@@ -90,6 +92,32 @@ sprot_section stbl[] = \
 		{.number=SRL_NUM, .data_ptr=SRL, .bytes=SRL_BYTES, .fun_read_cpy=FRL_R, .fun_write_cpy=0}\
 	};
 
+void prepare_read_cmd(uint8_t number, uint16_t offset)
+{
+	ibuff.data_and_crc[0] = number;
+	ibuff.data_and_crc[1] = offset&0xFF;
+	ibuff.data_and_crc[2] = (offset>>8)&0xFF;
+}
+
+void prepare_write_cmd(uint8_t number, uint16_t offset, uint8_t bytes)
+{
+	ibuff.data_and_crc[0] = number;
+	ibuff.data_and_crc[1] = offset&0xFF;
+	ibuff.data_and_crc[2] = (offset>>8)&0xFF;
+	ibuff.cmdHSize = (bytes+4)&0x7F;
+}
+
+bool validate_cmd_reread(uint8_t number, uint16_t offset, uint8_t bytes)
+{
+	//TODO
+	//TODO print errors
+}
+
+bool validate_cmd_rewrite(uint8_t number, uint16_t offset, uint8_t status)
+{
+	//TODO
+}
+	
 // void prepare_cmd(sprot_buff_entry* buff, uint16_t cmd, uint8_t size, bool invalid_offset, bool invalid_start, bool invalid_crc)
 // {
 // 	buff->start = START;
@@ -116,9 +144,6 @@ sprot_section stbl[] = \
 // 
 void test_sprot_read_success()
 {
-	sprot_fifo fifo, ofifo;
-	
-	memset(&fifo, 0x00, sizeof(fifo));
 	memset(&ofifo, 0x00, sizeof(ofifo));
 	
 	// Valid short section - start
@@ -149,9 +174,6 @@ void test_sprot_read_success()
 
 void test_sprot_read_fail()
 {
-	sprot_fifo fifo, ofifo;
-	
-	memset(&fifo, 0x00, sizeof(fifo));
 	memset(&ofifo, 0x00, sizeof(ofifo));
 	
 	// Valid short section - offset out of range
@@ -172,9 +194,6 @@ void test_sprot_read_fail()
 
 void test_sprot_write_success()
 {
-	sprot_fifo fifo, ofifo;
-	
-	memset(&fifo, 0x00, sizeof(fifo));
 	memset(&ofifo, 0x00, sizeof(ofifo));
 	
 	// Valid short section - start
@@ -215,9 +234,6 @@ void test_sprot_write_success()
 
 void test_sprot_write_fail()
 {
-	sprot_fifo fifo, ofifo;
-	
-	memset(&fifo, 0x00, sizeof(fifo));
 	memset(&ofifo, 0x00, sizeof(ofifo));
 	
 	// Valid short section - offset out of range
