@@ -22,6 +22,18 @@
  * loop -> process_fifo -> send to media by function
  *
  * TODO: better way to timeout commands?.
+ *
+ *
+ * Data sections:
+ * Every data section have to be described in sprot_section structure
+ * (all in one table). Functions fun_read_cpy/fun_write_cpy are
+ * intended to copy data in read/write, if function pointer will
+ * be NULL the transaction will not be allowed (read only if
+ * fun_write_cpy will be zero).
+ *
+ * Functions sprot_write_sec / sprot_read_sec have to be pointed
+ * in commands table (sprot_efunc spt_sec_tbl[]) with GetSec /
+ * SetSec commands.
  */
 
 #include <stdint.h>
@@ -63,19 +75,32 @@ typedef struct
 	void (*fun_ptr)(sprot_buff_entry*);
 } sprot_efunc;
 
+/**
+ * Describes data section.
+ * fun_read_cpy/fun_write_cpy - pointers to functions copying
+ * data on read / write. Those functions will be called after
+ * validating command input data.
+ */
 typedef struct
 {
 	uint8_t* data_ptr; // Pointer to data section
 	uint16_t bytes; // Bytes in data section
-	void (*fun_ptr_read)(sprot_buff_entry*, sprot_section*); // function called during read request
-	void (*fun_ptr_write)(sprot_buff_entry*, sprot_section*); // function called during write request
+	void (*fun_read_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);
+	void (*fun_write_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);
 } sprot_section; // TODO: some lockers / timestamps?
+
+extern sprot_section spt_sec_tbl[]; // Have to be defined
 
 //======= User functions =========
 
 void sprot_init_fifo(sprot_fifo* fifo);
-void sprot_write_sec(sprot_buff_entry* buff); // TODO: implementation, descriptions
-void sprot_read_sec(sprot_buff_entry* buff); // TODO: implementation, descriptions
+
+/**
+ * Functions handling GetSec / SetSec. Validating input command
+ * parameters and calling copy functions.
+ */
+void sprot_write_sec(sprot_buff_entry* buff); // TODO: implementation
+void sprot_read_sec(sprot_buff_entry* buff); // TODO: implementation
 
 /**
  * Must be called in loop to execute commands.
