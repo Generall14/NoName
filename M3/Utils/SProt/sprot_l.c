@@ -86,7 +86,7 @@ static sprot_efunc* get_fun(sprot_efunc table[], uint16_t cmd, uint8_t tbl_entri
 	return 0;
 }
 
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint16_t tbl_entries)
+void process_fifo(sprot_fifo* fifo, sprot_fifo* re_fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*, sprot_fifo*), uint16_t tbl_entries)
 {
 	sprot_buff_entry* entry = 0;
 	while(1)
@@ -105,7 +105,7 @@ void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(spr
 		if(!fun)
 		{
 			if(default_fun)
-				(*default_fun)(entry);
+				(*default_fun)(entry, re_fifo);
 			continue;
 		}
 
@@ -118,7 +118,7 @@ void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(spr
 		if(fun)
 		{
 			if(fun->fun_ptr)
-				fun->fun_ptr(entry);
+				fun->fun_ptr(entry, re_fifo);
 		}
 	}
 }
@@ -231,12 +231,12 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 	return bytes+4;
 }
 
-void sprot_write_sec(sprot_buff_entry* buff)
+void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
 	// TODO: implementation, descriptions
 }
 
-void sprot_read_sec(sprot_buff_entry* buff)
+void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
 	// TODO: implementation, descriptions
 }

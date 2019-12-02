@@ -72,7 +72,7 @@ typedef struct
 {
 	uint8_t size; // 0xFF - Do not check before call
 	uint16_t cmd; // command number
-	void (*fun_ptr)(sprot_buff_entry*);
+	void (*fun_ptr)(sprot_buff_entry*, sprot_fifo*);
 } sprot_efunc;
 
 /**
@@ -99,13 +99,19 @@ void sprot_init_fifo(sprot_fifo* fifo);
  * Functions handling GetSec / SetSec. Validating input command
  * parameters and calling copy functions.
  */
-void sprot_write_sec(sprot_buff_entry* buff); // TODO: implementation
-void sprot_read_sec(sprot_buff_entry* buff); // TODO: implementation
+void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
+void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
 
 /**
  * Must be called in loop to execute commands.
+ * fifo - executing fifo
+ * re_fifo - fifo used to send response, can be 0 when output fifo is executing
+ * table - table with commands
+ * default_fun - default function (used to commands not included in table)
+ * tbl_entries - entries in table
  */
-void process_fifo(sprot_fifo* fifo, sprot_efunc table[], void (*default_fun)(sprot_buff_entry*), uint16_t tbl_entries);
+void process_fifo(sprot_fifo* fifo, sprot_fifo* re_fifo, sprot_efunc table[],
+		void (*default_fun)(sprot_buff_entry*, sprot_fifo*), uint16_t tbl_entries);
 
 /**
  * Must be called in loop to timeout incoming commands.

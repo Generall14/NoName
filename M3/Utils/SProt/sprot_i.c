@@ -12,17 +12,17 @@ sprot_efunc irfifo_tbl[] = {};
 
 const uint16_t ififo_tbl_size = sizeof(ififo_tbl)/sizeof(ififo_tbl[0]);
 
-void ififo_def(sprot_buff_entry* buff)
+void ififo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
 
 }
 
-void ififo_hello(sprot_buff_entry* buff)
+void ififo_hello(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
-	sp_push_command_to_fifo(&rpc_fifo, CMD_REHELLO, "SProt-M3-dev", 12);
+	sp_push_command_to_fifo(re_fifo, CMD_REHELLO, "SProt-M3-dev", 12);
 }
 
-void irfifo_def(sprot_buff_entry* buff)
+void irfifo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
 	while(CDC_Transmit_FS(&(buff->start), (buff->cmdHSize&0x7F)+4)==USBD_BUSY);
 }

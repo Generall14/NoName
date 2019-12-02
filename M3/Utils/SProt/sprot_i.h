@@ -10,11 +10,11 @@
 
 // Data from PC
 
-void ififo_def(sprot_buff_entry* buff);
+void ififo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo);
 
 #define HELLO_CMD 0x100
 #define HELLO_SIZE 0
-void ififo_hello(sprot_buff_entry* buff);
+void ififo_hello(sprot_buff_entry* buff, sprot_fifo* re_fifo);
 
 extern sprot_fifo pc_fifo;
 extern sprot_efunc ififo_tbl[];
@@ -22,7 +22,7 @@ extern const uint16_t ififo_tbl_size;
 
 // Data to PC
 
-void irfifo_def(sprot_buff_entry* buff);
+void irfifo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo);
 
 extern sprot_fifo rpc_fifo;
 extern sprot_efunc irfifo_tbl[];
