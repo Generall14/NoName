@@ -89,7 +89,7 @@ typedef struct
 	void (*fun_write_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);
 } sprot_section; // TODO: some lockers / timestamps?
 
-extern sprot_section spt_sec_tbl[]; // Have to be defined
+extern sprot_section spt_sec_tbl[]; // Have to be defined in user implementation
 
 //======= User functions =========
 
@@ -97,10 +97,10 @@ void sprot_init_fifo(sprot_fifo* fifo);
 
 /**
  * Functions handling GetSec / SetSec. Validating input command
- * parameters and calling copy functions.
+ * parameters, preparing response buffer,  calling copy functions.
  */
-void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
-void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
+void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation, utests
+void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation, utests
 
 /**
  * Must be called in loop to execute commands.
