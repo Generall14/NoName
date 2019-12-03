@@ -78,6 +78,8 @@ int main(void)
 		last_timestamp = current_timestamp;
 		current_timestamp = get_global_clock();
 		diff_timestamp = current_timestamp - last_timestamp;
+
+		sec_sysTime = get_global_clock_us();
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include "stm32f1xx_hal.h"
 #include "sprot_l.h"
+#include <string.h>
 
 #define CMD_REHELLO 0x000
 #define CMD_REHELLO_TXT "SProt-M3"
@@ -27,5 +28,12 @@ void irfifo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo);
 extern sprot_fifo rpc_fifo;
 extern sprot_efunc irfifo_tbl[];
 #define irfifo_tbl_size 0
+
+// Data sections
+extern uint8_t sec_test[];
+extern uint32_t sec_sysTime;
+
+// Wrapper for memcpy
+void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes);
 
 #endif
