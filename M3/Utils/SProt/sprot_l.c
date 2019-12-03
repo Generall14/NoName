@@ -233,10 +233,10 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 
 void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
-	// TODO: implementation, descriptions
+	// TODO: implementation
 }
 
 void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
-	// TODO: implementation, descriptions
+	// TODO: implementation
 }
