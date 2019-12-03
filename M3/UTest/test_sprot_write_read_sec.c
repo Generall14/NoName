@@ -107,69 +107,132 @@ void prepare_write_cmd(uint8_t number, uint16_t offset, uint8_t bytes)
 	ibuff.cmdHSize = (bytes+4)&0x7F;
 }
 
+// retrurn true when command is ok
 bool validate_cmd_reread(uint8_t number, uint16_t offset, uint8_t bytes)
 {
-	//TODO
-	//TODO print errors
+	if(ofifo.buffs[0].start != 0x5A)
+		return false;
+	if(ofifo.buffs[0].cmdHSize != (bytes+4+3)&0x7F)
+		return false;
+	if(ofifo.buffs[0].cmdL != 0x01)
+		return false;
+	if(ofifo.buffs[0].status != SPROT_FULL)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[0] != number)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[1] != offset&0xFF)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[2] != (offset>>8)&0xFF)
+		return false;
+	if(crc(&(ofifo.buffs[0].start), bytes+4))
+		return false;
+	return true;
 }
 
 bool validate_cmd_rewrite(uint8_t number, uint16_t offset, uint8_t status)
 {
-	//TODO
+	if(ofifo.buffs[0].start != 0x5A)
+		return false;
+	if(ofifo.buffs[0].cmdHSize != (4+4)&0x7F)
+		return false;
+	if(ofifo.buffs[0].cmdL != 0x01)
+		return false;
+	if(ofifo.buffs[0].status != SPROT_FULL)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[0] != number)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[1] != offset&0xFF)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[2] != (offset>>8)&0xFF)
+		return false;
+	if(ofifo.buffs[0].data_and_crc[3] != status)
+		return false;
+	if(crc(&(ofifo.buffs[0].start), 4+4))
+		return false;
+	return true;
 }
-	
-// void prepare_cmd(sprot_buff_entry* buff, uint16_t cmd, uint8_t size, bool invalid_offset, bool invalid_start, bool invalid_crc)
-// {
-// 	buff->start = START;
-// 	if(invalid_start)
-// 		buff->start ^= 0xFF;
-// 		
-// 	buff->write_offseet = size+4;
-// 	if(invalid_offset)
-// 		buff->write_offseet -= 1;
-// 		
-// 	buff->cmdHSize = (cmd>>1)&0x80 | size&0x7F;
-// 	buff->cmdL = cmd&0xFF;
-// 	
-// 	if(size>64)
-// 		size = 64;
-// 	
-// 	for(int i=0;i<size;i++)
-// 		buff->data_and_crc[i] = (i^cmd^size)&0xFF;
-// 	
-// 	buff->data_and_crc[size] = crc(&(buff->start), size+3);
-// 	if(invalid_crc)
-// 		buff->data_and_crc[size] ^= 0xFF;
-// }
-// 
+
+// retrurn true when parameters is ok
+bool validate_passed_parameters(uint8_t* ptr_dst, uint8_t* ptr_src, uint8_t bytes)
+{
+	if(ptr_dst != passed_ptr_dst)
+		return false;
+	if(ptr_src != passed_ptr_src)
+		return false;
+	if(passed_bytes != bytes)
+		return false;
+	return true;
+}
+
+
+
+
 void test_sprot_read_success()
 {
-	memset(&ofifo, 0x00, sizeof(ofifo));
-	
 	// Valid short section - start
-	// Proper functions should be called
-	// Function parameters should be valid
-	// Output buffer should be prepered - start, cmd, size, crc
-	
+	memset(&ofifo, 0x00, sizeof(ofifo));
+	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
+	char expected1[]={1, 0, 0, 0, 0, 0};
+	prepare_read_cmd(SRWS_NUM, 0);
+	sprot_read_sec(&ibuff, &ofifo);
+	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
+	"Valid short section - start - proper functions should be called");
+	TEST_CHECK_P(validate_passed_parameters(SRWS, &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES), \
+	"Valid short section - start - function parameters should be valid");
+	TEST_CHECK_P(validate_cmd_reread(SRWS_NUM, 0, SRWS_BYTES), \
+	"Valid short section - start - output buffer should be prepered - start, cmd, size, crc");
+
 	// Valid short section - mid
-	// Proper functions should be called
-	// Function parameters should be valid
-	// Output buffer should be prepered - start, cmd, size, crc
+	memset(&ofifo, 0x00, sizeof(ofifo));
+	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
+	char expected2[]={1, 0, 0, 0, 0, 0};
+	prepare_read_cmd(SRWS_NUM, 2);
+	sprot_read_sec(&ibuff, &ofifo);
+	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
+	"Valid short section - mid - proper functions should be called");
+	TEST_CHECK_P(validate_passed_parameters(&(SRWS[2]), &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES-2), \
+	"Valid short section - mid - function parameters should be valid");
+	TEST_CHECK_P(validate_cmd_reread(SRWS_NUM, 2, SRWS_BYTES-2), \
+	"Valid short section - mid - output buffer should be prepered - start, cmd, size, crc");
 	
 	// Valid long section - start
-	// Proper functions should be called
-	// Function parameters should be valid
-	// Output buffer should be prepered - start, cmd, size, crc
+	memset(&ofifo, 0x00, sizeof(ofifo));
+	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
+	char expected3[]={0, 0, 1, 0, 0, 0};
+	prepare_read_cmd(SRWL_NUM, 0);
+	sprot_read_sec(&ibuff, &ofifo);
+	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
+	"Valid long section - start - proper functions should be called");
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[0]), &(ofifo.buffs[0].data_and_crc[3]), 60), \
+	"Valid long section - start - function parameters should be valid");
+	TEST_CHECK_P(validate_cmd_reread(SRWL_NUM, 0, 60), \
+	"Valid long section - start - output buffer should be prepered - start, cmd, size, crc");
 	
 	// Valid long section - mid
-	// Proper functions should be called
-	// Function parameters should be valid
-	// Output buffer should be prepered - start, cmd, size, crc
+	memset(&ofifo, 0x00, sizeof(ofifo));
+	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
+	char expected4[]={0, 0, 1, 0, 0, 0};
+	prepare_read_cmd(SRWL_NUM, SRWL_BYTES-60);
+	sprot_read_sec(&ibuff, &ofifo);
+	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
+	"Valid long section - mid - proper functions should be called");
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[SRWL_BYTES-60]), &(ofifo.buffs[0].data_and_crc[3]), 60), \
+	"Valid long section - mid - function parameters should be valid");
+	TEST_CHECK_P(validate_cmd_reread(SRWL_NUM, SRWL_BYTES-60, 60), \
+	"Valid long section - mid - output buffer should be prepered - start, cmd, size, crc");
 	
 	// Valid long section - end
-	// Proper functions should be called
-	// Function parameters should be valid
-	// Output buffer should be prepered - start, cmd, size, crc
+	memset(&ofifo, 0x00, sizeof(ofifo));
+	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
+	char expected5[]={0, 0, 1, 0, 0, 0};
+	prepare_read_cmd(SRWL_NUM, SRWL_BYTES-30);
+	sprot_read_sec(&ibuff, &ofifo);
+	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
+	"Valid long section - end - proper functions should be called");
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[SRWL_BYTES-30]), &(ofifo.buffs[0].data_and_crc[3]), 30), \
+	"Valid long section - end - function parameters should be valid");
+	TEST_CHECK_P(validate_cmd_reread(SRWL_NUM, SRWL_BYTES-30, 30), \
+	"Valid long section - end - output buffer should be prepered - start, cmd, size, crc");
 }
 
 void test_sprot_read_fail()
