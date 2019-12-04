@@ -103,8 +103,8 @@ void sprot_init_fifo(sprot_fifo* fifo);
  * Functions handling GetSec / SetSec. Validating input command
  * parameters, preparing response buffer,  calling copy functions.
  */
-void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
-void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo); // TODO: implementation
+void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo);
+void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo);
 
 /**
  * Must be called in loop to execute commands.
