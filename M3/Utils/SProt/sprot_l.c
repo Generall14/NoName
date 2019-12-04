@@ -272,6 +272,7 @@ void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 		entry->fun_write_cpy(entry->data_ptr+offset, &(obuff->data_and_crc[3]), (buff->cmdHSize&0x7F)-3);
 
 	obuff->data_and_crc[4] = calc_crc(&(obuff->start), 4+3);
+	obuff->write_offseet = obuff->cmdHSize + 4;
 	obuff->status = SPROT_FULL;
 }
 
@@ -299,5 +300,6 @@ void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 
 	obuff->cmdHSize = bytes + 3;
 	obuff->data_and_crc[bytes+3] = calc_crc(&(obuff->start), bytes+3+3);
+	obuff->write_offseet = obuff->cmdHSize + 4;
 	obuff->status = SPROT_FULL;
 }

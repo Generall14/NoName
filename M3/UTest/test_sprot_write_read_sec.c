@@ -156,6 +156,11 @@ bool validate_cmd_reread(uint8_t number, uint16_t offset, uint8_t bytes)
 		printf("\nError, invalid crc: %d\n", ofifo.buffs[0].data_and_crc[3+bytes]);
 		return false;
 	}
+	if(ofifo.buffs[0].write_offseet != bytes+4+3)
+	{
+		printf("\nError, write_offseet: %d\n", ofifo.buffs[0].write_offseet);
+		return false;
+	}
 	return true;
 }
 
@@ -204,6 +209,11 @@ bool validate_cmd_rewrite(uint8_t number, uint16_t offset, uint8_t status)
 	if(crc(&(ofifo.buffs[0].start), 4+4))
 	{
 		printf("\nError, invalid crc: %d\n", ofifo.buffs[0].data_and_crc[4]);
+		return false;
+	}
+	if(ofifo.buffs[0].write_offseet != 8)
+	{
+		printf("\nError, write_offseet: %d\n", ofifo.buffs[0].write_offseet);
 		return false;
 	}
 	return true;
