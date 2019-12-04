@@ -37,7 +37,9 @@ void irfifo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 
 void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes)
 {
-	memcpy(dest, src, bytes);
+	for(int i =0;i<bytes;i++)
+		dest[i] = src[i];
+	//memcpy(dest, src, bytes);
 }
 
 uint8_t sec_test[] = {'N', 'I', 'C', '!'};
