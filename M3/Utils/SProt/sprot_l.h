@@ -50,6 +50,11 @@
 #define SPROT_FILLING 2
 #define SPROT_PROCESSING 3
 
+#define GETSEC_CMD 0x101
+#define GETSEC_SIZE 3
+#define SETSEC_CMD 0x102
+#define SETSEC_SIZE 0xFF
+
 #define SPROT_START 0x5A
 
 typedef struct

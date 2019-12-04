@@ -6,7 +6,8 @@ sprot_fifo rpc_fifo;
 
 sprot_efunc ififo_tbl[] = {\
 		{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}, \
-		{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}
+		{.size=GETSEC_SIZE, .cmd=GETSEC_CMD, .fun_ptr=sprot_read_sec}, \
+		{.size=SETSEC_SIZE, .cmd=SETSEC_CMD, .fun_ptr=sprot_write_sec}
 };
 
 sprot_section spt_sec_tbl[] = {\
