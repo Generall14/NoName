@@ -110,7 +110,7 @@ void prepare_write_cmd(uint8_t number, uint16_t offset, uint8_t bytes)
 	ibuff.data_and_crc[0] = number;
 	ibuff.data_and_crc[1] = offset&0xFF;
 	ibuff.data_and_crc[2] = (offset>>8)&0xFF;
-	ibuff.cmdHSize = (bytes+4)&0x7F;
+	ibuff.cmdHSize = (bytes+3)&0x7F;
 }
 
 // retrurn true when command is ok
@@ -162,23 +162,50 @@ bool validate_cmd_reread(uint8_t number, uint16_t offset, uint8_t bytes)
 bool validate_cmd_rewrite(uint8_t number, uint16_t offset, uint8_t status)
 {
 	if(ofifo.buffs[0].start != 0x5A)
+	{
+		printf("\nError, start = %d\n", ofifo.buffs[0].start);
 		return false;
-	if(ofifo.buffs[0].cmdHSize != (4+4)&0x7F)
+	}
+	if(ofifo.buffs[0].cmdHSize != 4)
+	{
+		printf("\nError, cmdHSize = %d\n", ofifo.buffs[0].cmdHSize);
 		return false;
-	if(ofifo.buffs[0].cmdL != 0x01)
+	}
+	if(ofifo.buffs[0].cmdL != 0x02)
+	{
+		printf("\nError, cmdL = %d\n", ofifo.buffs[0].cmdL);
 		return false;
+	}
 	if(ofifo.buffs[0].status != SPROT_FULL)
+	{
+		printf("\nError, status = %d\n", ofifo.buffs[0].status);
 		return false;
+	}
 	if(ofifo.buffs[0].data_and_crc[0] != number)
+	{
+		printf("\nError, data_and_crc[0] = %d\n", ofifo.buffs[0].data_and_crc[0]);
 		return false;
+	}
 	if(ofifo.buffs[0].data_and_crc[1] != offset&0xFF)
+	{
+		printf("\nError, data_and_crc[1] = %d\n", ofifo.buffs[0].data_and_crc[1]);
 		return false;
+	}
 	if(ofifo.buffs[0].data_and_crc[2] != (offset>>8)&0xFF)
+	{
+		printf("\nError, data_and_crc[2] = %d\n", ofifo.buffs[0].data_and_crc[2]);
 		return false;
+	}
 	if(ofifo.buffs[0].data_and_crc[3] != status)
+	{
+		printf("\nError, data_and_crc[3] = %d\n", ofifo.buffs[0].data_and_crc[3]);
 		return false;
+	}
 	if(crc(&(ofifo.buffs[0].start), 4+4))
+	{
+		printf("\nError, invalid crc: %d\n", ofifo.buffs[0].data_and_crc[4]);
 		return false;
+	}
 	return true;
 }
 
@@ -317,7 +344,7 @@ void test_sprot_write_success()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected1[]={0, 1, 0, 0, 0, 0};
 	prepare_write_cmd(SRWS_NUM, 0, SRWS_BYTES);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - start - proper functions should be called");
 	TEST_CHECK_P(validate_passed_parameters(&(SRWS[0]), &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES), \
@@ -330,7 +357,7 @@ void test_sprot_write_success()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected2[]={0, 1, 0, 0, 0, 0};
 	prepare_write_cmd(SRWS_NUM, 1, SRWS_BYTES-1);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - mid - proper functions should be called");
 	TEST_CHECK_P(validate_passed_parameters(&(SRWS[1]), &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES-1), \
@@ -343,7 +370,7 @@ void test_sprot_write_success()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected3[]={0, 0, 0, 1, 0, 0};
 	prepare_write_cmd(SRWL_NUM, 0, 10);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
 	TEST_CHECK_P(validate_passed_parameters(&(SRWL[0]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
@@ -356,7 +383,7 @@ void test_sprot_write_success()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected4[]={0, 0, 0, 1, 0, 0};
 	prepare_write_cmd(SRWL_NUM, 1, 10);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
 	TEST_CHECK_P(validate_passed_parameters(&(SRWL[1]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
@@ -369,7 +396,7 @@ void test_sprot_write_success()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected5[]={0, 0, 0, 1, 0, 0};
 	prepare_write_cmd(SRWL_NUM, SRWL_BYTES-10, 10);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
 	TEST_CHECK_P(validate_passed_parameters(&(SRWL[SRWL_BYTES-10]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
@@ -385,7 +412,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected1[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRWS_NUM, SRWS_BYTES+2, 2);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - offset out of range - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWS_NUM, SRWS_BYTES+2, STATUS_OOR), \
@@ -396,7 +423,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected2[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRWL_NUM, SRWL_BYTES+2, 2);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - offset out of range - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM, SRWL_BYTES+2, STATUS_OOR), \
@@ -407,7 +434,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected3[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRWL_NUM+1, SRWL_BYTES+2, 2);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Non existing section - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM+1, SRWL_BYTES+2, STATUS_US), \
@@ -418,7 +445,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected4[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRWS_NUM, 0, SRWS_BYTES);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - size out of range - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWS_NUM, 0, STATUS_OOR), \
@@ -429,7 +456,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected5[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRWL_NUM, SRWL_BYTES-2, 5);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - offset out of range - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM, SRWL_BYTES-2, STATUS_OOR), \
@@ -440,7 +467,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected6[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRS_NUM, 0, SRS_BYTES);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected6, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - read only - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRS_NUM, 0, STATUS_RO), \
@@ -451,7 +478,7 @@ void test_sprot_write_fail()
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected7[]={0, 0, 0, 0, 0, 0};
 	prepare_write_cmd(SRL_NUM, SRL_BYTES-60, SRL_BYTES);
-	sprot_read_sec(&ibuff, &ofifo);
+	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected7, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - read only - proper functions should not be called");
 	TEST_CHECK_P(validate_cmd_rewrite(SRL_NUM, SRL_BYTES-60, STATUS_RO), \

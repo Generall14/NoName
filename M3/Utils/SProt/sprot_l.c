@@ -232,11 +232,6 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 	return bytes+4;
 }
 
-void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
-{
-	// TODO: implementation
-}
-
 static sprot_section* find_section_entry(uint8_t number)
 {
 	for(int i=0; i<spt_sec_tbl_entries;i++)
@@ -245,6 +240,40 @@ static sprot_section* find_section_entry(uint8_t number)
 			return &(spt_sec_tbl[i]);
 	}
 	return 0;
+}
+
+static uint8_t resetsec_status(sprot_section* sec, uint16_t offset)
+{
+	if(!sec)
+		return 0x03;
+	if(!sec->fun_write_cpy)
+		return 0x01;
+	if(offset+sec->bytes-3 > sec->bytes)
+		return 0x02;
+	return 0;
+}
+
+void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
+{
+	sprot_buff_entry* obuff = get_spfifo_head(re_fifo);
+	obuff->status = SPROT_FILLING;
+	obuff->start = SPROT_START;
+	obuff->cmdL = 0x02;
+	obuff->cmdHSize = 0x04;
+	obuff->data_and_crc[0] = buff->data_and_crc[0];
+	obuff->data_and_crc[1] = buff->data_and_crc[1];
+	obuff->data_and_crc[2] = buff->data_and_crc[2];
+
+	sprot_section* entry = find_section_entry(buff->data_and_crc[0]);
+	uint16_t offset = MERGEWORD(buff->data_and_crc[2], buff->data_and_crc[1]);
+	obuff->data_and_crc[3] = resetsec_status(entry, offset);
+
+	if(!obuff->data_and_crc[3])
+		entry->fun_write_cpy(entry->data_ptr+offset, &(obuff->data_and_crc[3]), (buff->cmdHSize&0x7F)-3);
+
+	obuff->data_and_crc[4] = calc_crc(&(obuff->start), 4+3);
+	obuff->status = SPROT_FULL;
+	// TODO: implementation
 }
 
 void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
@@ -272,5 +301,4 @@ void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 	obuff->cmdHSize = bytes + 3;
 	obuff->data_and_crc[bytes+3] = calc_crc(&(obuff->start), bytes+3+3);
 	obuff->status = SPROT_FULL;
-	// TODO: implementation
 }
