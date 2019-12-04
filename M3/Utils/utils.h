@@ -21,4 +21,10 @@
 #define LED_IRQ_ON(LED) SET_BIT(LED_REG, LED);
 #define LED_IRQ_OFF(LED) CLEAR_BIT(LED_REG, LED);
 
+#define LOBYTE(x)  ((uint8_t)(x & 0x00FF))
+#define HIBYTE(x)  ((uint8_t)((x & 0xFF00) >>8))
+#define MERGEWORD(HI,LO) ( (uint16_t)(((HI << 8)&0xFF00) | (LO &0xFF)) )
+#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
+
 #endif

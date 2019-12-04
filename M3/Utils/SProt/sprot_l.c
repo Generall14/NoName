@@ -1,9 +1,9 @@
 #include "sprot_l.h"
 #include "global_clock.h"
 #include <string.h>
+#include "utils.h"
 
 #define D_INITIAL_CRC8 0x55
-#define MIN(a,b) (((a)<(b))?(a):(b))
 
 uint8_t crc8t[] = {0x0, 0xcf, 0x51, 0x9e, 0xa2, 0x6d, 0xf3, 0x3c, 0x8b, 0x44, 0xda, 0x15, 0x29, 0xe6, 0x78, 0xb7, 0xd9,
                    0x16, 0x88, 0x47, 0x7b, 0xb4, 0x2a, 0xe5, 0x52, 0x9d, 0x3, 0xcc, 0xf0, 0x3f, 0xa1, 0x6e, 0x7d, 0xb2, 0x2c, 0xe3,
@@ -261,7 +261,7 @@ void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 	sprot_section* entry = find_section_entry(buff->data_and_crc[0]);
 	if(entry)
 	{
-		uint16_t offset = (buff->data_and_crc[1]&0xFF) | (buff->data_and_crc[2]&0xFF)<<8;
+		uint16_t offset = MERGEWORD(buff->data_and_crc[2], buff->data_and_crc[1]);
 		if(offset<entry->bytes)
 		{
 			bytes = MIN(PACKAGE_DATA_BYTES-3, entry->bytes-offset);
