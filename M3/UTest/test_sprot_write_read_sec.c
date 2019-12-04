@@ -444,7 +444,7 @@ void test_sprot_write_fail()
 	memset(&ofifo, 0x00, sizeof(ofifo));
 	memset(&invokes, 0x00, sizeof(invokes)/sizeof(invokes[0]));
 	char expected4[]={0, 0, 0, 0, 0, 0};
-	prepare_write_cmd(SRWS_NUM, 0, SRWS_BYTES);
+	prepare_write_cmd(SRWS_NUM, 0, SRWS_BYTES+1);
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - size out of range - proper functions should not be called");
