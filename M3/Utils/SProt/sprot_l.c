@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define D_INITIAL_CRC8 0x55
+#define MIN(a,b) (((a)<(b))?(a):(b))
 
 uint8_t crc8t[] = {0x0, 0xcf, 0x51, 0x9e, 0xa2, 0x6d, 0xf3, 0x3c, 0x8b, 0x44, 0xda, 0x15, 0x29, 0xe6, 0x78, 0xb7, 0xd9,
                    0x16, 0x88, 0x47, 0x7b, 0xb4, 0x2a, 0xe5, 0x52, 0x9d, 0x3, 0xcc, 0xf0, 0x3f, 0xa1, 0x6e, 0x7d, 0xb2, 0x2c, 0xe3,
@@ -62,7 +63,7 @@ static bool is_buff_cmd_ok(sprot_buff_entry* buff)
 	if((uint8_t)(buff->cmdHSize&0x7F) > 64)
 		return false;
 
-	if(buff->start != 0x5A)
+	if(buff->start != SPROT_START)
 		return false;
 
 	if(buff->write_offseet != (uint8_t)((uint8_t)(buff->cmdHSize&0x7F) + 4))
@@ -223,7 +224,7 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 	memcpy(&(head->data_and_crc), data, bytes);
 
 	// Set other data
-	head->start = 0x5A;
+	head->start = SPROT_START;
 	head->cmdHSize = ((cmd>>1)&0x80) | (bytes&0x7F);
 	head->cmdL = cmd&0xFF;
 	head->data_and_crc[bytes] = calc_crc(&(head->start), bytes+3);
@@ -236,7 +237,40 @@ void sprot_write_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 	// TODO: implementation
 }
 
+static sprot_section* find_section_entry(uint8_t number)
+{
+	for(int i=0; i<spt_sec_tbl_entries;i++)
+	{
+		if(spt_sec_tbl[i].number == number)
+			return &(spt_sec_tbl[i]);
+	}
+	return 0;
+}
+
 void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 {
+	sprot_buff_entry* obuff = get_spfifo_head(re_fifo);
+	obuff->status = SPROT_FILLING;
+	obuff->start = SPROT_START;
+	obuff->cmdL = 0x01;
+	obuff->data_and_crc[0] = buff->data_and_crc[0];
+	obuff->data_and_crc[1] = buff->data_and_crc[1];
+	obuff->data_and_crc[2] = buff->data_and_crc[2];
+
+	uint8_t bytes = 0;
+	sprot_section* entry = find_section_entry(buff->data_and_crc[0]);
+	if(entry)
+	{
+		uint16_t offset = (buff->data_and_crc[1]&0xFF) | (buff->data_and_crc[2]&0xFF)<<8;
+		if(offset<entry->bytes)
+		{
+			bytes = MIN(PACKAGE_DATA_BYTES-3, entry->bytes-offset);
+			entry->fun_read_cpy(&(obuff->data_and_crc[3]), entry->data_ptr+offset, bytes);
+		}
+	}
+
+	obuff->cmdHSize = bytes + 3;
+	obuff->data_and_crc[bytes+3] = calc_crc(&(obuff->start), bytes+3+3);
+	obuff->status = SPROT_FULL;
 	// TODO: implementation
 }

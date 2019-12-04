@@ -50,6 +50,8 @@
 #define SPROT_FILLING 2
 #define SPROT_PROCESSING 3
 
+#define SPROT_START 0x5A
+
 typedef struct
 {
 	uint8_t start;
@@ -91,6 +93,7 @@ typedef struct
 } sprot_section; // TODO: some lockers / timestamps?
 
 extern sprot_section spt_sec_tbl[]; // Have to be defined in user implementation
+extern uint8_t spt_sec_tbl_entries; // Have to be defined in user implementation
 
 //======= User functions =========
 
