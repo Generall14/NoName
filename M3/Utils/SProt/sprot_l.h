@@ -120,7 +120,7 @@ void sprot_read_sec(sprot_buff_entry* buff, sprot_fifo* re_fifo);
  * tbl_entries - entries in table
  */
 void process_fifo(sprot_fifo* fifo, sprot_fifo* re_fifo, sprot_efunc table[],
-		void (*default_fun)(sprot_buff_entry*, sprot_fifo*), uint16_t tbl_entries);
+                  void (*default_fun)(sprot_buff_entry*, sprot_fifo*), uint16_t tbl_entries);
 
 /**
  * Must be called in loop to timeout incoming commands.

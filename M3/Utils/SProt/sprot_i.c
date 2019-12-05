@@ -5,14 +5,14 @@ sprot_fifo pc_fifo;
 sprot_fifo rpc_fifo;
 
 sprot_efunc ififo_tbl[] = {\
-		{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}, \
-		{.size=GETSEC_SIZE, .cmd=GETSEC_CMD, .fun_ptr=sprot_read_sec}, \
-		{.size=SETSEC_SIZE, .cmd=SETSEC_CMD, .fun_ptr=sprot_write_sec}
+	{.size=HELLO_SIZE, .cmd=HELLO_CMD, .fun_ptr=ififo_hello}, \
+	{.size=GETSEC_SIZE, .cmd=GETSEC_CMD, .fun_ptr=sprot_read_sec}, \
+	{.size=SETSEC_SIZE, .cmd=SETSEC_CMD, .fun_ptr=sprot_write_sec}
 };
 
 sprot_section spt_sec_tbl[] = {\
-		{.number=0, .data_ptr=sec_test, .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=mmcpy},\
-		{.number=1, .data_ptr=(uint8_t*)(&sec_sysTime), .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=0}
+	{.number=0, .data_ptr=sec_test, .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=mmcpy},\
+	{.number=1, .data_ptr=(uint8_t*)(&sec_sysTime), .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=0}
 };
 uint8_t spt_sec_tbl_entries = sizeof(spt_sec_tbl)/sizeof(spt_sec_tbl[0]);
 
@@ -37,7 +37,7 @@ void irfifo_def(sprot_buff_entry* buff, sprot_fifo* re_fifo)
 
 void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes)
 {
-	for(int i =0;i<bytes;i++)
+	for(int i =0; i<bytes; i++)
 		dest[i] = src[i];
 	//memcpy(dest, src, bytes);
 }

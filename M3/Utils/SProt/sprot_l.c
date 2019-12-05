@@ -234,7 +234,7 @@ uint8_t sp_push_command_to_fifo(sprot_fifo* fifo, uint16_t cmd, uint8_t* data, u
 
 static sprot_section* find_section_entry(uint8_t number)
 {
-	for(int i=0; i<spt_sec_tbl_entries;i++)
+	for(int i=0; i<spt_sec_tbl_entries; i++)
 	{
 		if(spt_sec_tbl[i].number == number)
 			return &(spt_sec_tbl[i]);
