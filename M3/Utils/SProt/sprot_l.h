@@ -95,7 +95,7 @@ typedef struct
 	uint16_t bytes; // Bytes in data section
 	void (*fun_read_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);
 	void (*fun_write_cpy)(uint8_t* dest, uint8_t* src, uint8_t bytes);
-} sprot_section; // TODO: some lockers / timestamps?
+} sprot_section;
 
 extern sprot_section spt_sec_tbl[]; // Have to be defined in user implementation
 extern uint8_t spt_sec_tbl_entries; // Have to be defined in user implementation
