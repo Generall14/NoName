@@ -22,5 +22,7 @@ int main()
 	printf("... %s \n", AT);
 	printf("End\n");
 	slog_log(1, 666);
+	
+	LOG_TEST(2, 102, 106);
 	return 0;
 }

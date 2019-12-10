@@ -12,3 +12,4 @@
 #define LOG_ERROR(TXT) SLABEL
 #define AT __FILE__
 
+#define LOG_TEST(CNT, ...) slog_log(CNT, __VA_ARGS__)
