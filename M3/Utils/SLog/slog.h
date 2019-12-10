@@ -39,10 +39,11 @@ typedef struct
  * TODO: implementation
  * TODO: arguments descriptions
  * 
- * log_id: IIII IIII  IIII IIII  IIII IIII  IIII PPAA, where:
+ * log_id: CCCI IIII  IIII IIII  IIII IIII  IIII PPAA, where:
  * I - log id
  * P - log level (as in macros LEVEL_XXX)
  * A - argument count
+ * C - control sum, number of ones in log_id (excluding C)
  */
 void slog_log_entry(uint32_t log_id, ...);
 
