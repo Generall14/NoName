@@ -6,6 +6,9 @@
 /**
  * TODO: Python macros
  * TODO: description
+ * 
+ * TODO: buffer implementation (data and functions)
+ * TODO: flushing implementation
  */
 
 #define LEVEL_ERROR 0
@@ -21,11 +24,25 @@
 #define LOG_INFO
 #define LOG_DEBUG
 
+#define SACOUNT_MASK 0x03
+
+typedef struct
+{
+	uint32_t log_id; // look at slog_log_entry description
+	uint32_t timestamp;
+	uint32_t args[3]; // up to 3 arguments
+} slog_entry;
+
 /**
  * This function should not be called indirectly, 
  * only by LOG_XXX macro.
  * TODO: implementation
  * TODO: arguments descriptions
+ * 
+ * log_id: IIII IIII  IIII IIII  IIII IIII  IIII PPAA, where:
+ * I - log id
+ * P - log level (as in macros LEVEL_XXX)
+ * A - argument count
  */
 void slog_log_entry(uint32_t log_id, ...);
 
