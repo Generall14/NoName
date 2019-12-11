@@ -1,6 +1,7 @@
 import os
 
 file_name = "gversions.h"
+
 base_data = \
 """#ifndef _GVERSIONS_H_
 #define _GVERSIONS_H_
@@ -9,6 +10,10 @@ base_data = \
 
 """
 end_data = "\n#endif"
+
+cwd = os.getcwd()
+if(cwd.endswith("Debug")):
+	file_name = "../"+file_name
 
 data = {
 	"COMMIT_ID": "-------",
@@ -65,3 +70,6 @@ ofile.write(gen_def("COMMIT_DATE"))
 
 ofile.write(end_data)
 ofile.close()
+
+
+
