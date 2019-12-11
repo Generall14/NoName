@@ -1,4 +1,6 @@
 #include "slog.h"
+#include <stdarg.h>
+#include "global_clock.h"
 
 void slog_log_entry(uint32_t log_id, ...)
 {
