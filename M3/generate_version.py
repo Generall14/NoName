@@ -13,6 +13,7 @@ base_data = \
  * be newer than stored in file.
  * Values MAJOR and MINOR will not be changed by script, those need
  * to be changed manually.
+ * Values COMMIT_ID_BYTES and COMMIT_DATE_BYTES points to string lengths.
  */
 
 """
@@ -74,6 +75,9 @@ ofile.write(gen_def("MINOR"))
 ofile.write(gen_def("HOTFIX"))
 ofile.write(gen_def("COMMIT_ID"))
 ofile.write(gen_def("COMMIT_DATE"))
+
+ofile.write("#define COMMIT_ID_BYTES "+str(len(data["COMMIT_ID"]))+"\n")
+ofile.write("#define COMMIT_DATE_BYTES "+str(len(data["COMMIT_DATE"]))+"\n")
 
 ofile.write(end_data)
 ofile.close()
