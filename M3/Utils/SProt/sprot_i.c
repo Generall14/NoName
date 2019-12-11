@@ -12,7 +12,10 @@ sprot_efunc ififo_tbl[] = {\
 
 sprot_section spt_sec_tbl[] = {\
 	{.number=0, .data_ptr=sec_test, .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=mmcpy},\
-	{.number=1, .data_ptr=(uint8_t*)(&sec_sysTime), .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=0}
+	{.number=1, .data_ptr=(uint8_t*)(&sec_sysTime), .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=0},\
+	{.number=2, .data_ptr=sec_ver, .bytes=4, .fun_read_cpy=mmcpy, .fun_write_cpy=0},\
+	{.number=3, .data_ptr=sec_commitId, .bytes=COMMIT_ID_BYTES, .fun_read_cpy=mmcpy, .fun_write_cpy=0},\
+	{.number=4, .data_ptr=sec_commitDate, .bytes=COMMIT_DATE_BYTES, .fun_read_cpy=mmcpy, .fun_write_cpy=0}
 };
 uint8_t spt_sec_tbl_entries = sizeof(spt_sec_tbl)/sizeof(spt_sec_tbl[0]);
 
@@ -44,3 +47,6 @@ void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes)
 
 uint8_t sec_test[] = {'N', 'I', 'C', '!'};
 uint32_t sec_sysTime = 0;
+uint8_t sec_ver[] = {MAJOR, MINOR, LOBYTE(HOTFIX), HIBYTE(HOTFIX)};
+uint8_t sec_commitId[] = COMMIT_ID;
+uint8_t sec_commitDate[] = COMMIT_DATE;

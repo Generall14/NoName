@@ -4,6 +4,7 @@
 #include "stm32f1xx_hal.h"
 #include "sprot_l.h"
 #include <string.h>
+#include "../gversions.h"
 
 #define CMD_REHELLO 0x000
 #define CMD_REHELLO_TXT "SProt-M3"
@@ -32,6 +33,9 @@ extern sprot_efunc irfifo_tbl[];
 // Data sections
 extern uint8_t sec_test[];
 extern uint32_t sec_sysTime;
+extern uint8_t sec_ver[];
+extern uint8_t sec_commitId[];
+extern uint8_t sec_commitDate[];
 
 // Wrapper for memcpy
 void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes);

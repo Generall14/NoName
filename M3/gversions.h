@@ -13,10 +13,10 @@
 
 #define MAJOR 0
 #define MINOR 0
-#define HOTFIX 6
-#define COMMIT_ID c714440
-#define COMMIT_DATE 2019-12-11 22:19:00
-#define COMMIT_ID_BYTES 7
-#define COMMIT_DATE_BYTES 19
+#define HOTFIX 9
+#define COMMIT_ID "4ef7d4d"
+#define COMMIT_DATE "2019-12-11 22:25:00"
+#define COMMIT_ID_BYTES 9
+#define COMMIT_DATE_BYTES 21
 
 #endif

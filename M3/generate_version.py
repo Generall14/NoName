@@ -24,8 +24,8 @@ if(cwd.endswith("Debug")):
 	file_name = "../"+file_name
 
 data = {
-	"COMMIT_ID": "-------",
-	"COMMIT_DATE": "0000-00-00 00:00:00",
+	"COMMIT_ID": '"-------"',
+	"COMMIT_DATE": '"0000-00-00 00:00:00"',
 	"MAJOR": "0",
 	"MINOR": "0",
 	"HOTFIX": "0"
@@ -48,11 +48,12 @@ try:
 except:
 	print("No previous file.")
 
+cid_cmd = "git rev-parse --short HEAD"
+date_cmd = "git show --no-patch --no-notes --pretty='%cd' --date=format:'%Y-%m-%d %H:%M:%S'"
 
-
-cid = os.popen('git rev-parse --short HEAD').read().rstrip()
+cid = '"'+os.popen(cid_cmd).read().rstrip()+'"'
 print("current commit id: {}".format(cid))
-date = os.popen("git show --no-patch --no-notes --pretty='%cd' --date=format:'%Y-%m-%d %H:%M:%S'").read().rstrip()
+date = '"'+os.popen(date_cmd).read().rstrip()+'"'
 print("current commit date: {}".format(date))
 
 print("saved commit date: "+data["COMMIT_DATE"])
