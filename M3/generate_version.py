@@ -6,7 +6,14 @@ base_data = \
 """#ifndef _GVERSIONS_H_
 #define _GVERSIONS_H_
 
-//TODO: descriptions
+/**
+ * File generated automaticly by generate_version.py.
+ * Values of COMMIT_ID and COMMIT_DATE are readed from git repository.
+ * Value HOTFIX is incremented by script when current commit will
+ * be newer than stored in file.
+ * Values MAJOR and MINOR will not be changed by script, those need
+ * to be changed manually.
+ */
 
 """
 end_data = "\n#endif"
