@@ -6,7 +6,6 @@ base_data = \
 #define _GVERSIONS_H_
 
 //TODO: descriptions
-//TODO: commit id history to prevent incrementing on backed repository (commit id: version)
 
 """
 end_data = "\n#endif"
