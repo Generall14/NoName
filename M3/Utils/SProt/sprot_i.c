@@ -47,6 +47,6 @@ void mmcpy(uint8_t* dest, uint8_t* src, uint8_t bytes)
 
 uint8_t sec_test[] = {'N', 'I', 'C', '!'};
 uint32_t sec_sysTime = 0;
-uint8_t sec_ver[] = {MAJOR, MINOR, LOBYTE(HOTFIX), HIBYTE(HOTFIX)};
+uint8_t sec_ver[] = {MAJOR, MINOR, LOBYTE(BUILD), HIBYTE(BUILD)};
 uint8_t sec_commitId[] = COMMIT_ID;
 uint8_t sec_commitDate[] = COMMIT_DATE;
