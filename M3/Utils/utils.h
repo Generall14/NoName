@@ -27,4 +27,8 @@
 #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))
 
+#define CAT2(A, B) A##B
+#define CAT3(A, B, C) A##B##C
+#define CAT4(A, B, C, D) A##B##C##D
+
 #endif

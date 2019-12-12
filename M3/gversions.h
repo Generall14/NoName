@@ -13,9 +13,9 @@
 
 #define MAJOR 0
 #define MINOR 0
-#define BUILD 12
-#define COMMIT_ID "31b4a29"
-#define COMMIT_DATE "2019-12-12 22:30:23"
+#define BUILD 13
+#define COMMIT_ID "da89e6e"
+#define COMMIT_DATE "2019-12-12 23:03:03"
 #define COMMIT_ID_BYTES 9
 #define COMMIT_DATE_BYTES 21
 
