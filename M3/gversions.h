@@ -2,8 +2,8 @@
 #define _GVERSIONS_H_
 
 /**
- * File generated automaticly by generate_version.py.
- * Values of COMMIT_ID and COMMIT_DATE are readed from git repository.
+ * File generated automatically by generate_version.py.
+ * Values of COMMIT_ID and COMMIT_DATE are read from git repository.
  * Value BUILD is incremented by script when current commit will
  * be newer than stored in file.
  * Values MAJOR and MINOR will not be changed by script, those need
@@ -13,9 +13,9 @@
 
 #define MAJOR 0
 #define MINOR 0
-#define BUILD 11
-#define COMMIT_ID "b0feaae"
-#define COMMIT_DATE "2019-12-12 21:43:14"
+#define BUILD 12
+#define COMMIT_ID "31b4a29"
+#define COMMIT_DATE "2019-12-12 22:30:23"
 #define COMMIT_ID_BYTES 9
 #define COMMIT_DATE_BYTES 21
 
