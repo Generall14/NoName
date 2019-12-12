@@ -4,7 +4,7 @@
 /**
  * File generated automaticly by generate_version.py.
  * Values of COMMIT_ID and COMMIT_DATE are readed from git repository.
- * Value HOTFIX is incremented by script when current commit will
+ * Value BUILD is incremented by script when current commit will
  * be newer than stored in file.
  * Values MAJOR and MINOR will not be changed by script, those need
  * to be changed manually.
@@ -13,9 +13,9 @@
 
 #define MAJOR 0
 #define MINOR 0
-#define HOTFIX 9
-#define COMMIT_ID "4ef7d4d"
-#define COMMIT_DATE "2019-12-11 22:25:00"
+#define BUILD 10
+#define COMMIT_ID "799d168"
+#define COMMIT_DATE "2019-12-11 22:38:25"
 #define COMMIT_ID_BYTES 9
 #define COMMIT_DATE_BYTES 21
 

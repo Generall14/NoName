@@ -9,7 +9,7 @@ base_data = \
 /**
  * File generated automaticly by generate_version.py.
  * Values of COMMIT_ID and COMMIT_DATE are readed from git repository.
- * Value HOTFIX is incremented by script when current commit will
+ * Value BUILD is incremented by script when current commit will
  * be newer than stored in file.
  * Values MAJOR and MINOR will not be changed by script, those need
  * to be changed manually.
@@ -28,7 +28,7 @@ data = {
 	"COMMIT_DATE": '"0000-00-00 00:00:00"',
 	"MAJOR": "0",
 	"MINOR": "0",
-	"HOTFIX": "0"
+	"BUILD": "0"
 	}
 
 def parse(line):
@@ -61,7 +61,7 @@ if date>data["COMMIT_DATE"]:
 	print("current id is newer than stored one, updating data.")
 	data["COMMIT_ID"] = cid
 	data["COMMIT_DATE"] = date
-	data["HOTFIX"] = str(int(data["HOTFIX"])+1)
+	data["BUILD"] = str(int(data["BUILD"])+1)
 else:
 	print("current id equal with stored one, no need to update.")
 print(data)
@@ -73,7 +73,7 @@ ofile.write(base_data)
 
 ofile.write(gen_def("MAJOR"))
 ofile.write(gen_def("MINOR"))
-ofile.write(gen_def("HOTFIX"))
+ofile.write(gen_def("BUILD"))
 ofile.write(gen_def("COMMIT_ID"))
 ofile.write(gen_def("COMMIT_DATE"))
 
