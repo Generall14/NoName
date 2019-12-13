@@ -65,6 +65,8 @@ int main(void)
 	current_timestamp = get_global_clock();
 	flash_read_time = current_timestamp - last_timestamp;
 #endif
+#define SLOGNAME_69 1
+	LOG_WARNING("test");
 
 	while (1)
 	{
