@@ -23,7 +23,7 @@
 #define SACOUNT_MASK 0x03
 
 #define GEN_LABEL(name, line) CAT3(name, _, line)
-#define LOG_ENTRY(...) slog_log_entry(GEN_LABEL(SLOGNAME, __LINE__), __VA_ARGS__)
+#define LOG_ENTRY(...) slog_log_entry(GEN_LABEL(SLOGNAME, __LINE__), ##__VA_ARGS__)
 
 #define LOG_ERROR(TXT, ...) LOG_ENTRY(__VA_ARGS__)
 
