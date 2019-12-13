@@ -8,6 +8,7 @@
 #include "SProt/sprot_i.h"
 #include "SProt/sprot_l.h"
 #include "global_clock.h"
+#include "SLog/slog.h"
 
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
