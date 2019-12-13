@@ -357,7 +357,7 @@ void test_sprot_write_success()
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected1, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - start - proper functions should be called");
-	TEST_CHECK_P(validate_passed_parameters(&(SRWS[0]), &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES), \
+	TEST_CHECK_P(validate_passed_parameters(&(SRWS[0]), &(ibuff.data_and_crc[3]), SRWS_BYTES), \
 	"Valid short section - start - function parameters should be valid");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWS_NUM, 0, STATUS_OK), \
 	"Valid short section - start - output buffer should be prepered");
@@ -370,7 +370,7 @@ void test_sprot_write_success()
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected2, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid short section - mid - proper functions should be called");
-	TEST_CHECK_P(validate_passed_parameters(&(SRWS[1]), &(ofifo.buffs[0].data_and_crc[3]), SRWS_BYTES-1), \
+	TEST_CHECK_P(validate_passed_parameters(&(SRWS[1]), &(ibuff.data_and_crc[3]), SRWS_BYTES-1), \
 	"Valid short section - mid - function parameters should be valid");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWS_NUM, 1, STATUS_OK), \
 	"Valid short section - mid - output buffer should be prepered");
@@ -383,7 +383,7 @@ void test_sprot_write_success()
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected3, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
-	TEST_CHECK_P(validate_passed_parameters(&(SRWL[0]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[0]), &(ibuff.data_and_crc[3]), 10), \
 	"Valid long section - start - function parameters should be valid");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM, 0, STATUS_OK), \
 	"Valid long section - start - output buffer should be prepered");
@@ -396,7 +396,7 @@ void test_sprot_write_success()
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected4, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
-	TEST_CHECK_P(validate_passed_parameters(&(SRWL[1]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[1]), &(ibuff.data_and_crc[3]), 10), \
 	"Valid long section - start - function parameters should be valid");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM, 1, STATUS_OK), \
 	"Valid long section - start - output buffer should be prepered");
@@ -409,7 +409,7 @@ void test_sprot_write_success()
 	sprot_write_sec(&ibuff, &ofifo);
 	TEST_CHECK_P(memcmp((void*)expected5, (void*)invokes, sizeof(invokes)/sizeof(invokes[0]))==0, \
 	"Valid long section - start - proper functions should be called");
-	TEST_CHECK_P(validate_passed_parameters(&(SRWL[SRWL_BYTES-10]), &(ofifo.buffs[0].data_and_crc[3]), 10), \
+	TEST_CHECK_P(validate_passed_parameters(&(SRWL[SRWL_BYTES-10]), &(ibuff.data_and_crc[3]), 10), \
 	"Valid long section - start - function parameters should be valid");
 	TEST_CHECK_P(validate_cmd_rewrite(SRWL_NUM, SRWL_BYTES-10, STATUS_OK), \
 	"Valid long section - start - output buffer should be prepered");
