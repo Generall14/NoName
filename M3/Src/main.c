@@ -71,6 +71,7 @@ int main(void)
 	while (1)
 	{
 		blocking_delay_ms(1);
+		LED_ON(LED3);
 		process_fifo(&pc_fifo, &rpc_fifo, ififo_tbl, ififo_def, ififo_tbl_size);
 		process_fifo(&rpc_fifo, 0, irfifo_tbl, irfifo_def, irfifo_tbl_size);
 
@@ -83,6 +84,7 @@ int main(void)
 		diff_timestamp = current_timestamp - last_timestamp;
 
 		sec_sysTime = get_global_clock_us();
+		LED_OFF(LED3);
 	}
 }
 
