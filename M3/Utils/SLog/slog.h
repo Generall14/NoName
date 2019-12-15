@@ -52,6 +52,15 @@ typedef struct
 	uint32_t args[3]; // up to 3 arguments
 } slog_entry;
 
+#define SLOG_BUFF_BYTES 64
+typedef struct
+{
+	uint8_t head;
+	uint8_t data_lost; // non zero value means entry cannot be created due to lack of memory
+	uint8_t data[SLOG_BUFF_BYTES];
+} slog_buff;
+extern slog_buff slog_buffer;
+
 /**
  * This function should not be called indirectly,
  * only by LOG_ERROR/WARNING/INFO/DEBUG macro.
@@ -66,5 +75,7 @@ typedef struct
  * Up to 3 arguments uint32_t.
  */
 void slog_log_entry(uint32_t log_id, ...);
+
+void slog_push_entry(slog_entry *entry, slog_buff *buff);
 
 #endif
