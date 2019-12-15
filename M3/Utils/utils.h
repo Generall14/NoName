@@ -1,6 +1,18 @@
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
+#ifndef UTEST
+#include "stm32f1xx_hal.h"
+#endif
+
+#ifdef UTEST
+#define _GID
+#define _GIE
+#else
+#define _GID __disable_irq()
+#define _GIE __enable_irq()
+#endif
+
 #define SWAP_BIT(REG, BIT)     ((REG) ^= (BIT))
 
 #define LED_REG GPIOB->ODR
