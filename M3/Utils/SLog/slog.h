@@ -81,4 +81,8 @@ void slog_log_entry(uint32_t log_id, ...);
 void slog_push_entry(slog_entry *entry, slog_buff *buff);
 void slog_clear_buff(slog_buff *buff);
 
+#ifdef UTEST
+void MOCK_slog_log_entry(uint32_t log_id, va_list args);
+#endif
+
 #endif

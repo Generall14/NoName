@@ -12,6 +12,11 @@ void slog_log_entry(uint32_t log_id, ...)
 	va_list args;
     va_start(args, log_id);
 
+#ifdef UTEST
+	MOCK_slog_log_entry(log_id, args);
+	return;
+#endif
+
 	slog_entry entry;
 	entry.log_id = log_id;
 	entry.timestamp = get_global_clock_us();
