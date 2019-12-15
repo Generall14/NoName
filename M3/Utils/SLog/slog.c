@@ -40,7 +40,8 @@ void slog_push_entry(slog_entry *entry, slog_buff *buff)
 
 void slog_clear_buff(slog_buff *buff)
 {
-	//TODO inplementation, utests
+	buff->data_lost = 0;
+	buff->head = 0;
 }
 
 void slog_init()
