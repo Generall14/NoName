@@ -95,15 +95,15 @@ void test_slog_macro()
 	TEST_CHECK_P(is_valid_args(eargsg), "LOG_DEBUG - 3 args");
 }
 
-void slog_log_entry(uint32_t log_id, ...)
-{
-	pargs[0] = log_id;
-	va_list args;
-    va_start(args, log_id);
-
-	for(int i=0;i<3;i++)
-		pargs[i+1] = va_arg(args, uint32_t);
-}
+// void slog_log_entry(uint32_t log_id, ...)
+// {
+// 	pargs[0] = log_id;
+// 	va_list args;
+//     va_start(args, log_id);
+// 
+// 	for(int i=0;i<3;i++)
+// 		pargs[i+1] = va_arg(args, uint32_t);
+// }
 
 bool is_valid_args(uint32_t eargs[])
 {

@@ -24,5 +24,6 @@ void test_sprot_read_fail();
 void test_sprot_write_success();
 void test_sprot_write_fail();
 void test_slog_macro();
+void test_slog_clear_buff();
 
 #endif

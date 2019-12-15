@@ -13,6 +13,8 @@
  * TODO: flushing implementation
  */
 
+void slog_init();
+
 #define LEVEL_ERROR 0
 #define LEVEL_WARNING 1
 #define LEVEL_INFO 2
@@ -77,5 +79,6 @@ extern slog_buff slog_buffer;
 void slog_log_entry(uint32_t log_id, ...);
 
 void slog_push_entry(slog_entry *entry, slog_buff *buff);
+void slog_clear_buff(slog_buff *buff);
 
 #endif
