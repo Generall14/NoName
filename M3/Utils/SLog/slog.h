@@ -25,7 +25,7 @@ void slog_init();
 #define SACOUNT_MASK 0x03
 
 #define GEN_LABEL(name, line) CAT3(name, _, line)
-#define LOG_ENTRY(...) slog_log_entry(GEN_LABEL(SLOGNAME, __LINE__), ##__VA_ARGS__)
+#define LOG_ENTRY(...) STUB(slog_log_entry(GEN_LABEL(SLOGNAME, __LINE__), ##__VA_ARGS__))
 
 #define LOG_ERROR(TXT, ...) LOG_ENTRY(__VA_ARGS__)
 
@@ -76,13 +76,9 @@ extern slog_buff slog_buffer;
  *
  * Up to 3 arguments uint32_t.
  */
-void slog_log_entry(uint32_t log_id, ...);
+void STUB(slog_log_entry(uint32_t log_id, ...));
 
 void slog_push_entry(slog_entry *entry, slog_buff *buff);
 void slog_clear_buff(slog_buff *buff);
-
-#ifdef UTEST
-void MOCK_slog_log_entry(uint32_t log_id, va_list args);
-#endif
 
 #endif
