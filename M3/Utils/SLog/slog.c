@@ -17,7 +17,7 @@ void slog_log_entry(uint32_t log_id, ...)
 //		entry.args[i] = va_arg(args, uint32_t);
 
 	_GID;
-//	slog_push_entry(&entry, &slog_buffer);
+	STUB(slog_push_entry(&entry, &slog_buffer));
 	_GIE;
 }
 

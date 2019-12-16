@@ -27,5 +27,6 @@ void test_slog_macro();
 void test_slog_clear_buff();
 void test_slog_push_entry_success();
 void test_slog_push_entry_fail();
+void test_slog_log_entry();
 
 #endif

@@ -83,6 +83,7 @@ void slog_clear_buff(slog_buff *buff);
 
 #ifdef UTEST
 void STUB_slog_log_entry(uint32_t log_id, ...);
+void STUB_slog_push_entry(slog_entry *entry, slog_buff *buff);
 #endif
 
 #endif
