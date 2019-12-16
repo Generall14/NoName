@@ -76,9 +76,13 @@ extern slog_buff slog_buffer;
  *
  * Up to 3 arguments uint32_t.
  */
-void STUB(slog_log_entry(uint32_t log_id, ...));
+void slog_log_entry(uint32_t log_id, ...);
 
 void slog_push_entry(slog_entry *entry, slog_buff *buff);
 void slog_clear_buff(slog_buff *buff);
+
+#ifdef UTEST
+void STUB_slog_log_entry(uint32_t log_id, ...);
+#endif
 
 #endif

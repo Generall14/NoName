@@ -32,5 +32,7 @@ TEST_LIST = {
    { "test_sprot_write_fail", test_sprot_write_fail },
    { "test_slog_macro", test_slog_macro },
    { "test_slog_clear_buff", test_slog_clear_buff },
+   { "test_slog_push_entry_success", test_slog_push_entry_success },
+   { "test_slog_push_entry_fail", test_slog_push_entry_fail },
    { NULL, NULL }
 };
