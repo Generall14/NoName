@@ -1,0 +1,36 @@
+\newpage
+
+\section{Dane binarne}
+\label{Sec_DaneBinarne}
+
+Wpisy logów przechowywane są w buforze jeden za drugim, każdy wpis składa się z od dwóch do pięciu słów \texttt{uint32\_t}:
+
+\begin{longtable}{|p{\BWIDTH}|p{\OWIDTH}|}
+	\hline
+	\textbf{Bajt} & \textbf{Opis}\\ 
+	\hline
+	\hline
+	\texttt{0 -- 3} & \textbf{log\_id}: identyfikator zdarzenia zapisany jako \texttt{uint32\_t}\\
+	& \begin{tabular}{|p{\IBWIDTH}|p{\IOWIDTH}|}
+		\hline
+		\textbf{Bit} & \textbf{Opis}\\ 
+		\hline
+		\hline
+		0 -- 1 & \textbf{Args}: liczba argumentów (\texttt{uint2}).\\
+		\hline
+		2 -- 3 & \textbf{Level}: poziom zdarzenia (\texttt{uint2}). 0 -- error, 1 -- warning, 2 -- info, 3 -- debug.\\
+		\hline
+		4 -- 28 & \textbf{Id}: id zdarzenia (\texttt{uint25}). Wartości puste i pełne (same zera lub same jedynki) nie mogą być wykorzystywane jako \textbf{Id}\\
+		\hline
+		29 -- 31 & \textbf{CSum}: suma kontrolna (\texttt{uint3}), liczba niezerowych bitów w \textbf{log\_id} (z wyłączeniem \textbf{CSum}).\\
+		\hline
+	\end{tabular}\\
+	\hline
+	\texttt{4 -- 7} & \textbf{Timestamp}: znacznik czasu zdarzenia [$\mu s$] (\texttt{uint32\_t}) \\
+	\hline
+	\texttt{8 ...} & \textbf{Arg[x]}: kolejno zapisane argumenty zdarzenia (\texttt{uint32\_t}), łącznie \textbf{Args} argumentów.
+	\\
+	\hline
+\end{longtable}
+
+W miarę ubywania wolnej przestrzeni w buforach logów najstarsze wpisy mogą być wymazywane bez żadnego powiadomienia / oznaczenia. Warunkiem jest zagwarantowanie, że wpisy będą wyrównane do początku bufora (inaczej dane byłyby nie do odczytania).
