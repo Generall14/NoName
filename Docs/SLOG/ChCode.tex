@@ -1,0 +1,18 @@
+\newpage
+
+\section{Implementacja}
+\label{Sec_Implementacja}
+
+\subsection{Zgłaszanie logów w kodzie}
+Wszystkie logi w programie muszą być zapisywane poprzez makra \texttt{LOG\_ERROR}, \texttt{LOG\_WARNING}, \texttt{LOG\_INFO}, \texttt{LOG\_DEBUG} (patrz \texttt{slog.h}).
+
+Na początku każdego pliku w którym będą zgłaszane logi należy dodać definicję:
+\begin{lstlisting}[language=c++]
+#define SLOGNAME FILENAME
+\end{lstlisting}
+, gdzie \texttt{FILENAME} jest nazwą pliku.
+
+Poziom zapisywanych logów można ustawić definiując odpowiednią wartość w \texttt{LOG\_LEVEL} z pliku \texttt{slog.h}.
+
+\subsection{Generowanie mapy i definicji}
+\TODO
