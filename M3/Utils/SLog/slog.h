@@ -9,16 +9,16 @@
  * TODO: Python macros
  * TODO: description
  * 
- * TODO: buffer implementation (data and functions)
  * TODO: flushing implementation
  */
 
 void slog_init();
 
-#define LEVEL_ERROR 0
-#define LEVEL_WARNING 1
-#define LEVEL_INFO 2
-#define LEVEL_DEBUG 3
+#define LEVEL_NONE 0
+#define LEVEL_ERROR 1
+#define LEVEL_WARNING 2
+#define LEVEL_INFO 3
+#define LEVEL_DEBUG 4
 
 #define LOG_LEVEL LEVEL_DEBUG
 
@@ -27,7 +27,11 @@ void slog_init();
 #define GEN_LABEL(name, line) CAT3(name, _, line)
 #define LOG_ENTRY(...) STUB(slog_log_entry(GEN_LABEL(SLOGNAME, __LINE__), ##__VA_ARGS__))
 
+#if LOG_LEVEL >= LEVEL_ERROR
 #define LOG_ERROR(TXT, ...) LOG_ENTRY(__VA_ARGS__)
+#else
+#define LOG_ERROR(TXT, ...)
+#endif
 
 #if LOG_LEVEL >= LEVEL_WARNING
 #define LOG_WARNING(TXT, ...) LOG_ENTRY(__VA_ARGS__)
@@ -66,7 +70,6 @@ extern slog_buff slog_buffer;
 /**
  * This function should not be called indirectly,
  * only by LOG_ERROR/WARNING/INFO/DEBUG macro.
- * TODO: implementation
  *
  * log_id: CCCI IIII  IIII IIII  IIII IIII  IIII PPAA, where:
  * I - log id
