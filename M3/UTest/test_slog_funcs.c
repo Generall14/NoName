@@ -19,29 +19,26 @@ bool is_copied_ok(slog_entry *entry, slog_buff *buff)
 {
 	uint8_t args = entry->log_id&0x03;
 	
+	printf("\ndata[0]: %d, %d, %d, %d, head %d, args %d\n", buff->data[0], buff->data[1], buff->data[2], buff->data[3], buff->head, args);
 	
-	if(read_le(&(buff->data[buff->head-args-2]))!=entry->log_id)
+	if(read_le(&(buff->data[buff->head-(args+2)*4]))!=entry->log_id)
 	{
 		printf("\nError, log_id: %d, should be: %d\n", \
-		read_le(&(buff->data[buff->head-args-2])), entry->log_id);
+		read_le(&(buff->data[buff->head-(args+2)*4])), entry->log_id);
 		return false;
 	}
-	if(read_le(&(buff->data[buff->head-args-1]))!=entry->timestamp)
+	if(read_le(&(buff->data[buff->head-(args+1)*4]))!=entry->timestamp)
 	{
 		printf("\nError, timestamp: %d, should be: %d\n", \
-		read_le(&(buff->data[buff->head-args-1])), entry->timestamp);
+		read_le(&(buff->data[buff->head-(args+1)*4])), entry->timestamp);
 		return false;
 	}
 	
-	for(int i=args;i>0;i--)
+	for(int i=args-1;i>=0;i--)
 	{
-		if(read_le(&(buff->data[buff->head-i]))!=entry->args[i-1])
+		if(read_le(&(buff->data[buff->head-args*4+i*4]))!=entry->args[i])
 			return false;
 	}
-	if(read_le(&(buff->data[buff->head-args-1]))!=entry->timestamp)
-		return false;
-	if(read_le(&(buff->data[buff->head-args-2]))!=entry->log_id)
-		return false;
 	return true;
 }
 

@@ -2,6 +2,7 @@
 #include "global_clock.h"
 #include "utils.h"
 #include <assert.h>
+#include <string.h>
 
 slog_buff slog_buffer;
 
@@ -38,9 +39,14 @@ void slog_push_entry(slog_entry *entry, slog_buff *buff)
 		return;
 	}
 
-	uint32_t* ptr = (uint32_t*)&(buff->data[buff->head]);
-	*ptr = entry->log_id;
-
+	memcpy(&(buff->data[buff->head]), entry, required);
+//	uint32_t* ptr = (uint32_t*)&(buff->data[buff->head]);
+//	*ptr = entry->log_id;
+//	*ptr++ = (uint32_t)0x66;
+//	*ptr++ = (uint32_t)0x66;
+//	*ptr++ = (uint32_t)0x66;
+//	*ptr++ = (uint32_t)0x66;
+//	*ptr++ = (uint32_t)0x66;
 	buff->head += required;
 	// TODO implementation
 }
