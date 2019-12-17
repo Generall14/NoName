@@ -32,7 +32,6 @@ void slog_push_entry(slog_entry *entry, slog_buff *buff)
 
 	uint8_t required = ((entry->log_id&SACOUNT_MASK) + 2)*4;
 	uint8_t available = SLOG_BUFF_BYTES - buff->head;
-	//printf("\nrequired %d, available %d, head %d\n", required, available, buff->head);
 	if(required > available)
 	{
 		buff->data_lost = 0x01;
@@ -40,15 +39,7 @@ void slog_push_entry(slog_entry *entry, slog_buff *buff)
 	}
 
 	memcpy(&(buff->data[buff->head]), entry, required);
-//	uint32_t* ptr = (uint32_t*)&(buff->data[buff->head]);
-//	*ptr = entry->log_id;
-//	*ptr++ = (uint32_t)0x66;
-//	*ptr++ = (uint32_t)0x66;
-//	*ptr++ = (uint32_t)0x66;
-//	*ptr++ = (uint32_t)0x66;
-//	*ptr++ = (uint32_t)0x66;
 	buff->head += required;
-	// TODO implementation
 }
 
 void slog_clear_buff(slog_buff *buff)
