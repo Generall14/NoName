@@ -1,6 +1,7 @@
 #include "slog.h"
 #include "global_clock.h"
 #include "utils.h"
+#include <assert.h>
 
 slog_buff slog_buffer;
 
@@ -23,7 +24,25 @@ void slog_log_entry(uint32_t log_id, ...)
 
 void slog_push_entry(slog_entry *entry, slog_buff *buff)
 {
-	// TODO implementation, utests
+	assert(buff->head <= SLOG_BUFF_BYTES);
+
+	if(buff->data_lost)
+		return;
+
+	uint8_t required = ((entry->log_id&SACOUNT_MASK) + 2)*4;
+	uint8_t available = SLOG_BUFF_BYTES - buff->head;
+	//printf("\nrequired %d, available %d, head %d\n", required, available, buff->head);
+	if(required > available)
+	{
+		buff->data_lost = 0x01;
+		return;
+	}
+
+	uint32_t* ptr = (uint32_t*)&(buff->data[buff->head]);
+	*ptr = entry->log_id;
+
+	buff->head += required;
+	// TODO implementation
 }
 
 void slog_clear_buff(slog_buff *buff)
