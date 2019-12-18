@@ -58,12 +58,12 @@ typedef struct
 	uint32_t args[3]; // up to 3 arguments
 } slog_entry;
 
-#define SLOG_BUFF_BYTES 64
+#define SLOG_BUFF_WORDS 16
 typedef struct
 {
 	uint8_t head;
 	uint8_t data_lost; // non zero value means entry cannot be created due to lack of memory
-	uint8_t data[SLOG_BUFF_BYTES];
+	uint32_t data[SLOG_BUFF_WORDS];
 } slog_buff;
 extern slog_buff slog_buffer;
 
