@@ -35,5 +35,6 @@ TEST_LIST = {
    { "test_slog_push_entry_success", test_slog_push_entry_success },
    { "test_slog_push_entry_fail", test_slog_push_entry_fail },
    { "test_slog_log_entry", test_slog_log_entry },
+   { "test_slog_storage", test_slog_storage },
    { NULL, NULL }
 };
