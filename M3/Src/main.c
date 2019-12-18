@@ -32,6 +32,7 @@ int main(void)
 	MX_TIM2_Init();
 
 	//FLASH test
+//#define xxxxxxxxxxxxxxxx
 #ifdef xxxxxxxxxxxxxxxx
 	uint32_t PageError;
 	FLASH_EraseInitTypeDef ddd= {FLASH_TYPEERASE_PAGES, 0, 0x801F800u, 1};
@@ -65,7 +66,7 @@ int main(void)
 	current_timestamp = get_global_clock();
 	flash_read_time = current_timestamp - last_timestamp;
 #endif
-#define SLOGNAME_69 1
+#define SLOGNAME_70 1
 	LOG_WARNING("test");
 
 	while (1)
