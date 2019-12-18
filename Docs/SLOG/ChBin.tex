@@ -10,7 +10,7 @@ Wpisy logów przechowywane są w buforze jeden za drugim, każdy wpis składa si
 	\textbf{Bajt} & \textbf{Opis}\\ 
 	\hline
 	\hline
-	\texttt{0 -- 3} & \textbf{log\_id}: identyfikator zdarzenia zapisany jako \texttt{uint32\_t}\\
+	\texttt{0 -- 3} & \textbf{log\_id}: identyfikator zdarzenia zapisany jako \texttt{uint32\_t}. Wartości \texttt{0x00000000} i \texttt{0xFFFFFFFF} oznaczają wpis pusty, nieposiadający innych pól niż \textbf{log\_id}, należy go zignorować i przejść jedno słowo dalej w pamięci.\\
 	& \begin{tabular}{|p{\IBWIDTH}|p{\IOWIDTH}|}
 		\hline
 		\textbf{Bit} & \textbf{Opis}\\ 
