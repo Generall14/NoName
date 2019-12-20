@@ -76,15 +76,6 @@ int main(void)
 		process_fifo(&pc_fifo, &rpc_fifo, ififo_tbl, ififo_def, ififo_tbl_size);
 		process_fifo(&rpc_fifo, 0, irfifo_tbl, irfifo_def, irfifo_tbl_size);
 
-		//LED_SWAP(LED0);
-		//LED_ON(LED1);
-		//LED_OFF(LED2);
-
-		//last_timestamp = current_timestamp;
-		//current_timestamp = get_global_clock();
-		//diff_timestamp = current_timestamp - last_timestamp;
-
-		//sec_sysTime = get_global_clock_us();
 		LED_OFF(LED3);
 	}
 }
