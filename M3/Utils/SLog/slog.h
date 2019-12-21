@@ -61,7 +61,7 @@ typedef struct
 #define SLOG_BUFF_WORDS 16
 typedef struct
 {
-	uint8_t head;
+	uint8_t head; // offset in data to next free index
 	uint8_t data_lost; // non zero value means entry cannot be created due to lack of memory
 	uint32_t data[SLOG_BUFF_WORDS];
 } slog_buff;

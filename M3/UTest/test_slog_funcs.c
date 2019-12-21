@@ -41,9 +41,9 @@ bool is_copied_ok(slog_entry *entry, slog_buff *buff)
 
 bool buff_data_is_null(slog_buff *buff)
 {
-	for(int i=0;i<SLOG_BUFF_BYTES;i++)
+	for(int i=0;i<SLOG_BUFF_WORDS;i++)
 	{
-		if(buff->data[i]!=0x00)
+		if(buff->data[i]!=0x00000000)
 			return false;
 	}
 	return true;
@@ -66,7 +66,7 @@ void test_slog_push_entry_success()
 		memset(&buff, 0x00, sizeof(slog_buff));
 		slog_entry e = {0x0100+i, 0x002, {0x003, 0x004, 0x005}};
 		slog_push_entry(&e, &buff);
-		TEST_CHECK_P(buff.head==4*2+4*i, "Empty buffer, %i args - head should be updated.", i);
+		TEST_CHECK_P(buff.head==2+i, "Empty buffer, %i args - head should be updated.", i);
 		TEST_CHECK_P(buff.data_lost==0, "Empty buffer, %i args - data_lost should be zero.", i);
 		TEST_CHECK_P(is_copied_ok(&e, &buff), "Empty buffer, %i args - data should be copied.", i);
 	}
@@ -87,10 +87,10 @@ void test_slog_push_entry_success()
 	for(int i=0;i<4;i++)
 	{
 		memset(&buff, 0x00, sizeof(slog_buff));
-		buff.head = SLOG_BUFF_BYTES-(4*2+4*i)-1;
+		buff.head = SLOG_BUFF_WORDS-(2+i)-1;
 		slog_entry e = {0x0100+i, 0x002, {0x003, 0x004, 0x005}};
 		slog_push_entry(&e, &buff);
-		TEST_CHECK_P(buff.head==SLOG_BUFF_BYTES-1, \
+		TEST_CHECK_P(buff.head==SLOG_BUFF_WORDS-1, \
 		"Almost full buffer, %i args - head should be updated.", i);
 		TEST_CHECK_P(buff.data_lost==0, "Almost full buffer, %i args - data_lost should be zero.", i);
 		TEST_CHECK_P(is_copied_ok(&e, &buff), "Almost full buffer, %i args - data should be copied.", i);
@@ -100,10 +100,10 @@ void test_slog_push_entry_success()
 	for(int i=0;i<4;i++)
 	{
 		memset(&buff, 0x00, sizeof(slog_buff));
-		buff.head = SLOG_BUFF_BYTES-(4*2+4*i);
+		buff.head = SLOG_BUFF_WORDS-(2+i);
 		slog_entry e = {0x0100+i, 0x002, {0x003, 0x004, 0x005}};
 		slog_push_entry(&e, &buff);
-		TEST_CHECK_P(buff.head==SLOG_BUFF_BYTES, \
+		TEST_CHECK_P(buff.head==SLOG_BUFF_WORDS, \
 		"To full, %i args - head should be updated.", i);
 		TEST_CHECK_P(buff.data_lost==0, "To full, %i args - data_lost should be zero.", i);
 		TEST_CHECK_P(is_copied_ok(&e, &buff), "To full, %i args - data should be copied.", i);
@@ -131,10 +131,10 @@ void test_slog_push_entry_fail()
 	for(int i=0;i<4;i++)
 	{
 		memset(&buff, 0x00, sizeof(slog_buff));
-		buff.head = SLOG_BUFF_BYTES;
+		buff.head = SLOG_BUFF_WORDS;
 		slog_entry e = {0x0100+i, 0x002, {0x003, 0x004, 0x005}};
 		slog_push_entry(&e, &buff);
-		TEST_CHECK_P(buff.head==SLOG_BUFF_BYTES, \
+		TEST_CHECK_P(buff.head==SLOG_BUFF_WORDS, \
 		"Bufer full, data_lost=0, %i args - head should not be updated.", i);
 		TEST_CHECK_P(buff.data_lost==1, \
 		"Bufer full, data_lost=0, %i args - data_lost should be set.", i);
@@ -146,10 +146,10 @@ void test_slog_push_entry_fail()
 	for(int i=0;i<4;i++)
 	{
 		memset(&buff, 0x00, sizeof(slog_buff));
-		buff.head = SLOG_BUFF_BYTES-(4*2+4*i)+1;
+		buff.head = SLOG_BUFF_WORDS-(2+i)+1;
 		slog_entry e = {0x0100+i, 0x002, {0x003, 0x004, 0x005}};
 		slog_push_entry(&e, &buff);
-		TEST_CHECK_P(buff.head==SLOG_BUFF_BYTES-(4*2+4*i)+1, \
+		TEST_CHECK_P(buff.head==SLOG_BUFF_WORDS-(2+i)+1, \
 		"Bufer almost full, data_lost=0, %i args - head should not be updated.", i);
 		TEST_CHECK_P(buff.data_lost==1, \
 		"Bufer almost full, data_lost=0, %i args - data_lost should be set.", i);
