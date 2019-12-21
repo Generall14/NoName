@@ -25,21 +25,21 @@ void slog_log_entry(uint32_t log_id, ...)
 
 void slog_push_entry(slog_entry *entry, slog_buff *buff)
 {
-	assert(buff->head <= SLOG_BUFF_WORDS*4);
+	assert(buff->head <= SLOG_BUFF_WORDS);
 
 	if(buff->data_lost)
 		return;
 
-//	uint8_t required = ((entry->log_id&SACOUNT_MASK) + 2)*4; TODO reimplement to uint32 entries
-//	uint8_t available = SLOG_BUFF_BYTES - buff->head;
-//	if(required > available)
-//	{
-//		buff->data_lost = 0x01;
-//		return;
-//	}
-//
-//	memcpy(&(buff->data[buff->head]), entry, required);
-//	buff->head += required;
+	uint8_t required = (entry->log_id&SACOUNT_MASK) + 2;
+	uint8_t available = SLOG_BUFF_WORDS - buff->head;
+	if(required > available)
+	{
+		buff->data_lost = 0x01;
+		return;
+	}
+
+	memcpy(&(buff->data[buff->head]), entry, required*sizeof(uint32_t));
+	buff->head += required;
 }
 
 void slog_clear_buff(slog_buff *buff)
