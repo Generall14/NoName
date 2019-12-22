@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #define WORDS_PER_PAGE 1024/4
+#define CLEAR_VAL 0xFFFFFFFF
 
 typedef struct
 {
