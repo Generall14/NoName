@@ -134,7 +134,7 @@ void test_slog_storage()
 	memset((void*)pages, 0x55, PAGE_BYTES*2);
 	uint8_t e_c_pages2[] = {0, 1};
 	slog_storage_init((uint32_t*)pages, ALLOCATED_PAGES);
-	TEST_CHECK_P(verify((uint32_t*)pages, PAGE_IDX, 0, 2, 2, e_c_pages2), \
+	TEST_CHECK_P(verify((uint32_t*)pages, 0, 0, 2, 2, e_c_pages2), \
 	"Full page, full page.");
 	
 	free(pages);
