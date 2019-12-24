@@ -17,7 +17,7 @@ void slog_storage_init(uint32_t* storage_ptr, uint8_t pages_1024B)
 
 	bool clears_found = false;
 	uint16_t next_idx;
-	for(uint16_t idx=0;idx<pages_1024B*WORDS_PER_PAGE;idx++)
+	for(uint16_t idx=0; idx<pages_1024B*WORDS_PER_PAGE; idx++)
 	{
 		if(storage_ptr[idx] == CLEAR_VAL)
 			clears_found = true;
@@ -32,7 +32,7 @@ void slog_storage_init(uint32_t* storage_ptr, uint8_t pages_1024B)
 
 	if(!clears_found)
 	{
-		for(int i=0;i<pages_1024B;i++)
+		for(int i=0; i<pages_1024B; i++)
 			STUB(erase_page(i));
 	}
 }
